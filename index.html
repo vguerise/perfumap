@@ -4,267 +4,296 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Análise de Coleção — O Perfumista</title>
-  <meta name="description" content="Descubra os 3 perfumes certos para completar sua coleção. Análise personalizada com I.A. especializada em perfumaria masculina.">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --orange:#E85D04;--orange-light:#F48C06;--orange-dark:#C14B00;
+  --orange-muted:rgba(232,93,4,.10);--black:#111;--charcoal:#2D2D2D;
+  --gray-mid:#777;--gray-light:#E8E8E8;--white:#FFF;--off-white:#F8F8F8;
+  --success:#2A9D5C;--danger:#D62828;
+}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--white);color:var(--black);line-height:1.7;overflow-x:hidden}
+h1,h2,h3{font-family:'Montserrat',sans-serif;line-height:1.2}
+.container{max-width:860px;margin:0 auto;padding:0 1.5rem}
+.hidden{display:none!important}
 
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+/* ── AUTH OVERLAY ── */
+.auth-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:1000;display:flex;align-items:center;justify-content:center;padding:1rem}
+.auth-box{background:white;border-radius:16px;padding:2.5rem 2rem;width:100%;max-width:420px;position:relative}
+.auth-logo{font-family:'Montserrat',sans-serif;font-size:1.1rem;font-weight:900;color:var(--orange);text-align:center;margin-bottom:.3rem}
+.auth-title{font-family:'Montserrat',sans-serif;font-size:1.4rem;font-weight:800;text-align:center;margin-bottom:.3rem}
+.auth-sub{font-size:.88rem;color:var(--gray-mid);text-align:center;margin-bottom:1.8rem}
+.auth-field{margin-bottom:1rem}
+.auth-field label{display:block;font-size:.82rem;font-weight:700;color:var(--black);margin-bottom:.4rem}
+.auth-field input{width:100%;border:2px solid var(--gray-light);border-radius:8px;padding:.85rem 1rem;font-family:'DM Sans',sans-serif;font-size:.97rem;outline:none;transition:border-color .2s}
+.auth-field input:focus{border-color:var(--orange)}
+.auth-msg{font-size:.82rem;padding:.7rem 1rem;border-radius:8px;margin-bottom:1rem;display:none}
+.auth-msg.err{background:rgba(214,40,40,.08);border:1.5px solid rgba(214,40,40,.3);color:var(--danger);display:block}
+.auth-msg.ok{background:rgba(42,157,92,.08);border:1.5px solid rgba(42,157,92,.3);color:var(--success);display:block}
+.btn-auth{width:100%;background:var(--orange);color:white;border:none;border-radius:8px;padding:1rem;font-family:'DM Sans',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;transition:all .2s;margin-bottom:.9rem}
+.btn-auth:hover{background:var(--orange-dark)}
+.btn-auth:disabled{opacity:.45;cursor:not-allowed}
+.auth-toggle{text-align:center;font-size:.85rem;color:var(--gray-mid)}
+.auth-toggle a{color:var(--orange);cursor:pointer;font-weight:600;text-decoration:none}
 
-    :root {
-      --orange: #E85D04;
-      --orange-light: #F48C06;
-      --orange-dark: #C14B00;
-      --orange-muted: rgba(232,93,4,0.10);
-      --black: #111111;
-      --charcoal: #2D2D2D;
-      --gray-dark: #444444;
-      --gray-mid: #777777;
-      --gray-light: #E8E8E8;
-      --white: #FFFFFF;
-      --off-white: #F8F8F8;
-      --success: #2A9D5C;
-      --danger: #D62828;
-    }
+/* ── TOPBAR ── */
+.topbar{background:var(--black);padding:.7rem 1.5rem;display:flex;align-items:center;justify-content:space-between}
+.topbar-brand{font-family:'Montserrat',sans-serif;font-weight:900;color:var(--orange);font-size:.95rem}
+.topbar-user{display:flex;align-items:center;gap:1rem}
+.topbar-email{font-size:.8rem;color:rgba(255,255,255,.55)}
+.btn-logout{background:none;border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.7);font-family:'DM Sans',sans-serif;font-size:.78rem;font-weight:600;padding:.35rem .9rem;border-radius:20px;cursor:pointer;transition:all .2s}
+.btn-logout:hover{border-color:var(--orange);color:var(--orange)}
 
-    html { scroll-behavior: smooth; }
-    body { font-family: 'DM Sans', -apple-system, sans-serif; background: var(--white); color: var(--black); line-height: 1.7; overflow-x: hidden; }
-    h1,h2,h3 { font-family: 'Montserrat', Helvetica, Arial, sans-serif; line-height: 1.2; }
-    .container { max-width: 860px; margin: 0 auto; padding: 0 1.5rem; }
+/* ── HERO ── */
+.hero{background:var(--black);text-align:center;padding:3rem 1.5rem 3rem;position:relative;overflow:hidden}
+.hero::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(232,93,4,.18) 0%,transparent 70%);pointer-events:none}
+.hero-inner{position:relative;z-index:2;max-width:740px;margin:0 auto}
+.hero h1{font-size:clamp(1.7rem,4.5vw,2.7rem);font-weight:900;color:var(--white);line-height:1.25;margin-bottom:1rem}
+.hero h1 .hl{color:var(--orange)}
+.hero p{font-size:clamp(.95rem,2vw,1.1rem);color:rgba(255,255,255,.6);max-width:560px;margin:0 auto}
+.divider{height:4px;background:linear-gradient(90deg,transparent,var(--orange),transparent)}
 
-    /* ── HERO ── */
-    .hero { background: var(--black); text-align: center; padding: 4rem 1.5rem 3.5rem; position: relative; overflow: hidden; }
-    .hero::after { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 0%, rgba(232,93,4,.18) 0%, transparent 70%); pointer-events: none; }
-    .hero-inner { position: relative; z-index: 2; max-width: 740px; margin: 0 auto; }
-    .hero-badge { display: inline-flex; align-items: center; gap: .5rem; background: rgba(232,93,4,.15); border: 1px solid rgba(232,93,4,.35); color: var(--orange-light); padding: .45rem 1.1rem; border-radius: 50px; font-size: .78rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 1.8rem; }
-    .hero h1 { font-size: clamp(1.8rem,4.5vw,2.9rem); font-weight: 900; color: var(--white); line-height: 1.25; margin-bottom: 1.2rem; }
-    .hero h1 .hl { color: var(--orange); }
-    .hero p { font-size: clamp(1rem,2vw,1.15rem); color: rgba(255,255,255,.65); max-width: 580px; margin: 0 auto; }
-    .divider { height: 4px; background: linear-gradient(90deg, transparent, var(--orange), transparent); }
+/* ── FORM ── */
+.form-section{background:var(--off-white);padding:3rem 0 4rem}
+.section-label{display:block;text-align:center;font-size:.72rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--orange);margin-bottom:.5rem}
+.section-title{font-size:clamp(1.5rem,3.5vw,2rem);text-align:center;margin-bottom:2.2rem;color:var(--black)}
+.section-title em{font-style:normal;color:var(--orange)}
 
-    /* ── FORM ── */
-    .form-section { background: var(--off-white); padding: 3.5rem 0 4rem; }
-    .section-label { display: block; text-align: center; font-size: .72rem; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--orange); margin-bottom: .6rem; }
-    .section-title { font-size: clamp(1.6rem,3.5vw,2.2rem); text-align: center; margin-bottom: 2.5rem; color: var(--black); }
-    .section-title em { font-style: normal; color: var(--orange); }
+/* Steps */
+.steps-bar{display:flex;align-items:center;justify-content:center;margin-bottom:2.2rem}
+.step-item{display:flex;flex-direction:column;align-items:center;gap:.4rem}
+.step-circle{width:34px;height:34px;border-radius:50%;border:2.5px solid var(--gray-light);display:flex;align-items:center;justify-content:center;font-family:'Montserrat',sans-serif;font-size:.82rem;font-weight:800;color:var(--gray-mid);background:white;transition:all .3s}
+.step-circle.active{border-color:var(--orange);color:var(--orange)}
+.step-circle.done{border-color:var(--success);background:var(--success);color:white}
+.step-label{font-size:.65rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--gray-mid);transition:color .3s}
+.step-label.active{color:var(--orange)}
+.step-label.done{color:var(--success)}
+.step-connector{height:2px;width:48px;background:var(--gray-light);margin:0 4px 18px;transition:background .3s}
+.step-connector.done{background:var(--success)}
 
-    /* Steps */
-    .steps-bar { display: flex; align-items: center; justify-content: center; margin-bottom: 2.5rem; }
-    .step-item { display: flex; flex-direction: column; align-items: center; gap: .4rem; }
-    .step-circle { width: 36px; height: 36px; border-radius: 50%; border: 2.5px solid var(--gray-light); display: flex; align-items: center; justify-content: center; font-family: 'Montserrat',sans-serif; font-size: .85rem; font-weight: 800; color: var(--gray-mid); background: white; transition: all .3s; }
-    .step-circle.active { border-color: var(--orange); color: var(--orange); }
-    .step-circle.done { border-color: var(--success); background: var(--success); color: white; }
-    .step-label { font-size: .68rem; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--gray-mid); transition: color .3s; }
-    .step-label.active { color: var(--orange); }
-    .step-label.done { color: var(--success); }
-    .step-connector { height: 2px; width: 52px; background: var(--gray-light); margin: 0 5px 20px; transition: background .3s; }
-    .step-connector.done { background: var(--success); }
+/* Cards */
+.form-card{background:white;border:2px solid var(--gray-light);border-left:6px solid var(--orange);border-radius:12px;padding:1.8rem 2rem;margin-bottom:1.2rem;transition:box-shadow .2s}
+.form-card:focus-within{box-shadow:0 4px 22px rgba(232,93,4,.12)}
+.form-card-title{font-size:1.05rem;font-weight:800;color:var(--black);margin-bottom:.25rem}
+.form-card-sub{font-size:.88rem;color:var(--gray-mid);margin-bottom:1.2rem}
 
-    /* Form Card */
-    .form-card { background: white; border: 2px solid var(--gray-light); border-left: 6px solid var(--orange); border-radius: 12px; padding: 2rem 2.2rem; margin-bottom: 1.4rem; transition: box-shadow .2s; }
-    .form-card:focus-within { box-shadow: 0 4px 22px rgba(232,93,4,.12); }
-    .form-card-title { font-size: 1.1rem; font-weight: 800; color: var(--black); margin-bottom: .3rem; }
-    .form-card-sub { font-size: .9rem; color: var(--gray-mid); margin-bottom: 1.4rem; }
+/* Input */
+.input-row{display:flex;gap:.7rem}
+input[type="text"]{flex:1;border:2px solid var(--gray-light);border-radius:8px;padding:.82rem 1rem;font-family:'DM Sans',sans-serif;font-size:.95rem;color:var(--black);outline:none;transition:border-color .2s;background:white}
+input[type="text"]:focus{border-color:var(--orange)}
+input[type="text"]::placeholder{color:var(--gray-mid)}
+.btn-add{background:var(--orange);color:white;border:none;border-radius:8px;padding:.82rem 1.3rem;font-size:1.4rem;font-weight:900;cursor:pointer;transition:all .2s;line-height:1}
+.btn-add:hover{background:var(--orange-dark);transform:scale(1.05)}
 
-    /* Input row */
-    .input-row { display: flex; gap: .7rem; }
-    input[type="text"] { flex: 1; border: 2px solid var(--gray-light); border-radius: 8px; padding: .85rem 1.1rem; font-family: 'DM Sans',sans-serif; font-size: .97rem; color: var(--black); outline: none; transition: border-color .2s; background: white; }
-    input[type="text"]:focus { border-color: var(--orange); }
-    input[type="text"]::placeholder { color: var(--gray-mid); }
-    .btn-add { background: var(--orange); color: white; border: none; border-radius: 8px; padding: .85rem 1.3rem; font-size: 1.4rem; font-weight: 900; cursor: pointer; transition: all .2s; line-height: 1; }
-    .btn-add:hover { background: var(--orange-dark); transform: scale(1.05); }
+/* Concentração */
+.conc-row{margin-top:.6rem}
+select.conc-select{width:100%;border:2px solid var(--gray-light);border-radius:8px;padding:.82rem 2.4rem .82rem 1rem;font-family:'DM Sans',sans-serif;font-size:.93rem;color:var(--black);outline:none;background:white url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23777' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat right 1rem center;appearance:none;cursor:pointer;transition:border-color .2s}
+select.conc-select:focus{border-color:var(--orange)}
 
-    .budget-grid-3 { grid-template-columns: repeat(3,1fr) !important; }
+/* OR divider */
+.or-divider{display:flex;align-items:center;gap:1rem;margin:1.1rem 0}
+.or-divider::before,.or-divider::after{content:'';flex:1;height:1px;background:var(--gray-light)}
+.or-divider span{font-size:.75rem;font-weight:700;color:var(--gray-mid);text-transform:uppercase;letter-spacing:1px;white-space:nowrap}
 
-    /* Dropdown concentração */
-    .conc-row { display: flex; gap: .7rem; margin-top: .7rem; }
-    select.conc-select {
-      flex: 1; border: 2px solid var(--gray-light); border-radius: 8px;
-      padding: .85rem 1.1rem; font-family: 'DM Sans',sans-serif;
-      font-size: .95rem; color: var(--black); outline: none;
-      transition: border-color .2s; background: white; cursor: pointer;
-      appearance: none;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23777' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
-      background-repeat: no-repeat;
-      background-position: right 1rem center;
-      padding-right: 2.5rem;
-    }
-    select.conc-select:focus { border-color: var(--orange); }
-    .or-divider { display: flex; align-items: center; gap: 1rem; margin: 1.2rem 0; }
-    .or-divider::before, .or-divider::after { content: ''; flex: 1; height: 1px; background: var(--gray-light); }
-    .or-divider span { font-size: .78rem; font-weight: 700; color: var(--gray-mid); text-transform: uppercase; letter-spacing: 1px; white-space: nowrap; }
+/* Upload */
+.upload-area{border:2px dashed var(--gray-light);border-radius:10px;padding:1.1rem;text-align:center;cursor:pointer;transition:all .2s;background:var(--off-white);position:relative}
+.upload-area:hover,.upload-area.dragover{border-color:var(--orange);background:var(--orange-muted)}
+.upload-area input[type="file"]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.upload-icon{font-size:1.5rem;display:block;margin-bottom:.3rem}
+.upload-label{font-size:.85rem;font-weight:600;color:var(--charcoal);display:block;margin-bottom:.15rem}
+.upload-sub{font-size:.73rem;color:var(--gray-mid)}
+.upload-status{font-size:.8rem;font-weight:600;margin-top:.5rem;min-height:1.1em}
+.upload-status.ok{color:var(--success)}
+.upload-status.err{color:var(--danger)}
+.upload-status.loading{color:var(--orange)}
 
-    /* File upload */
-    .upload-area {
-      border: 2px dashed var(--gray-light); border-radius: 10px;
-      padding: 1.2rem; text-align: center; cursor: pointer;
-      transition: all .2s; background: var(--off-white); position: relative;
-    }
-    .upload-area:hover { border-color: var(--orange); background: var(--orange-muted); }
-    .upload-area.dragover { border-color: var(--orange); background: var(--orange-muted); }
-    .upload-area.loading-file { border-color: var(--orange); }
-    .upload-area input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
-    .upload-icon { font-size: 1.6rem; display: block; margin-bottom: .4rem; }
-    .upload-label { font-size: .88rem; font-weight: 600; color: var(--charcoal); display: block; margin-bottom: .2rem; }
-    .upload-sub { font-size: .75rem; color: var(--gray-mid); }
-    .upload-status { font-size: .82rem; font-weight: 600; margin-top: .6rem; min-height: 1.2em; }
-    .upload-status.ok { color: var(--success); }
-    .upload-status.err { color: var(--danger); }
-    .upload-status.loading { color: var(--orange); }
+/* Tags */
+.tags-area{display:flex;flex-wrap:wrap;gap:.45rem;min-height:34px;margin-top:.9rem}
+.tag{background:var(--orange-muted);border:1.5px solid rgba(232,93,4,.3);color:var(--orange-dark);padding:.38rem .85rem;border-radius:20px;font-size:.82rem;font-weight:600;display:flex;align-items:center;gap:.55rem;animation:tagIn .2s ease}
+@keyframes tagIn{from{opacity:0;transform:scale(.85)}to{opacity:1;transform:scale(1)}}
+.tag-x{cursor:pointer;opacity:.5;font-size:1rem;line-height:1;transition:opacity .2s}
+.tag-x:hover{opacity:1;color:var(--danger)}
+.tags-empty{font-size:.82rem;color:var(--gray-mid);font-style:italic;margin-top:.3rem}
+.count-line{font-size:.78rem;color:var(--gray-mid);margin-top:.6rem;text-align:right}
+.count-line span{color:var(--orange);font-weight:700}
+.cloud-badge{font-size:.72rem;color:var(--success);font-weight:600;margin-top:.35rem;display:flex;align-items:center;gap:.3rem}
 
-    /* Tags */
-    .tags-area { display: flex; flex-wrap: wrap; gap: .5rem; min-height: 36px; margin-top: 1rem; }
-    .tag { background: var(--orange-muted); border: 1.5px solid rgba(232,93,4,.3); color: var(--orange-dark); padding: .4rem .9rem; border-radius: 20px; font-size: .85rem; font-weight: 600; display: flex; align-items: center; gap: .6rem; animation: tagIn .2s ease; }
-    @keyframes tagIn { from { opacity:0;transform:scale(.85); } to { opacity:1;transform:scale(1); } }
-    .tag-x { cursor: pointer; opacity: .5; font-size: 1.05rem; line-height: 1; transition: opacity .2s; }
-    .tag-x:hover { opacity: 1; color: var(--danger); }
-    .tags-empty { font-size: .85rem; color: var(--gray-mid); font-style: italic; margin-top: .4rem; }
-    .count-line { font-size: .8rem; color: var(--gray-mid); margin-top: .7rem; text-align: right; }
-    .count-line span { color: var(--orange); font-weight: 700; }
+/* Options */
+.opt-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.65rem}
+.opt-grid.two{grid-template-columns:repeat(2,1fr)}
+.opt{border:2px solid var(--gray-light);border-radius:10px;padding:.9rem .7rem;text-align:center;cursor:pointer;background:white;transition:all .2s}
+.opt:hover{border-color:var(--orange)}
+.opt.sel{border-color:var(--orange);background:var(--orange-muted)}
+.opt .v{font-family:'Montserrat',sans-serif;font-weight:800;font-size:.88rem;color:var(--black);display:block}
+.opt .l{font-size:.7rem;color:var(--gray-mid);margin-top:.15rem;display:block}
+.opt.sel .v{color:var(--orange)}
+.opt.sel .l{color:var(--orange-dark)}
+.opt .emo{font-size:1.4rem;display:block;margin-bottom:.25rem}
 
-    /* Options */
-    .opt-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: .7rem; }
-    .opt-grid.two { grid-template-columns: repeat(2,1fr); }
-    .opt { border: 2px solid var(--gray-light); border-radius: 10px; padding: 1rem .8rem; text-align: center; cursor: pointer; background: white; transition: all .2s; }
-    .opt:hover { border-color: var(--orange); }
-    .opt.sel { border-color: var(--orange); background: var(--orange-muted); }
-    .opt .v { font-family: 'Montserrat',sans-serif; font-weight: 800; font-size: .9rem; color: var(--black); display: block; }
-    .opt .l { font-size: .72rem; color: var(--gray-mid); margin-top: .2rem; display: block; }
-    .opt.sel .v { color: var(--orange); }
-    .opt.sel .l { color: var(--orange-dark); }
-    .opt .emo { font-size: 1.5rem; display: block; margin-bottom: .3rem; }
+/* Social */
+.social-row{display:grid;grid-template-columns:1fr 1fr;gap:.8rem}
+.social-field{position:relative}
+.social-prefix{position:absolute;left:.9rem;top:50%;transform:translateY(-50%);font-weight:700;color:var(--gray-mid);font-size:.92rem;pointer-events:none}
+.social-field input{padding-left:1.8rem;width:100%}
 
-    /* Social input */
-    .social-row { display: grid; grid-template-columns: 1fr 1fr; gap: .8rem; }
-    .social-field { position: relative; }
-    .social-prefix { position: absolute; left: .9rem; top: 50%; transform: translateY(-50%); font-weight: 700; color: var(--gray-mid); font-size: .95rem; pointer-events: none; }
-    .social-field input { padding-left: 1.8rem; width: 100%; }
+/* LGPD */
+.lgpd-box{background:white;border:2px solid var(--gray-light);border-radius:10px;padding:1.1rem 1.4rem;margin-bottom:1.1rem;display:flex;align-items:flex-start;gap:.9rem}
+.lgpd-box input[type="checkbox"]{width:18px;height:18px;flex-shrink:0;margin-top:.2rem;accent-color:var(--orange);cursor:pointer}
+.lgpd-text{font-size:.82rem;color:var(--charcoal);line-height:1.6}
+.lgpd-text strong{color:var(--black)}
+.lgpd-text a{color:var(--orange);text-decoration:none}
 
-    /* LGPD */
-    .lgpd-box {
-      background: white; border: 2px solid var(--gray-light);
-      border-radius: 10px; padding: 1.2rem 1.5rem;
-      margin-bottom: 1.2rem; display: flex; align-items: flex-start; gap: 1rem;
-    }
-    .lgpd-box input[type="checkbox"] { width: 20px; height: 20px; flex-shrink: 0; margin-top: .15rem; accent-color: var(--orange); cursor: pointer; }
-    .lgpd-text { font-size: .85rem; color: var(--charcoal); line-height: 1.6; }
-    .lgpd-text strong { color: var(--black); }
-    .lgpd-text a { color: var(--orange); text-decoration: none; }
+/* Error / Submit */
+.error-msg{background:rgba(214,40,40,.07);border:1.5px solid rgba(214,40,40,.3);border-radius:8px;padding:.85rem 1.1rem;color:var(--danger);font-size:.88rem;margin-bottom:.9rem;display:none}
+.error-msg.show{display:block}
+.btn-submit{width:100%;background:var(--orange);color:white;border:none;border-radius:8px;padding:1.15rem 2rem;font-family:'DM Sans',sans-serif;font-size:1rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;cursor:pointer;transition:all .25s;animation:ctaPulse 2.5s ease-in-out infinite}
+.btn-submit:hover:not(:disabled){background:var(--orange-dark);transform:translateY(-2px);box-shadow:0 10px 35px rgba(232,93,4,.45);animation:none}
+.btn-submit:disabled{opacity:.35;cursor:not-allowed;animation:none;box-shadow:none;transform:none}
+@keyframes ctaPulse{0%,100%{box-shadow:0 0 10px 2px rgba(232,93,4,.4),0 5px 22px rgba(232,93,4,.25)}50%{box-shadow:0 0 28px 7px rgba(232,93,4,.65),0 8px 38px rgba(232,93,4,.45)}}
 
-    /* Error / Submit */
-    .error-msg { background: rgba(214,40,40,.07); border: 1.5px solid rgba(214,40,40,.3); border-radius: 8px; padding: .9rem 1.2rem; color: var(--danger); font-size: .9rem; margin-bottom: 1rem; display: none; }
-    .error-msg.show { display: block; }
+/* ── LOADING ── */
+.loading-section{display:none;background:var(--off-white);padding:5rem 1.5rem;text-align:center}
+.loading-section.show{display:block}
+.loading-icon{font-size:2.8rem;display:block;animation:spin 2s linear infinite;margin-bottom:1rem}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-title{font-family:'Montserrat',sans-serif;font-size:1.3rem;font-weight:800;margin-bottom:.4rem}
+.loading-sub{color:var(--gray-mid);font-size:.92rem}
+.loading-dots{display:inline-flex;gap:.3rem;margin-top:1.3rem}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--orange);animation:bounce .8s ease-in-out infinite}
+.dot:nth-child(2){animation-delay:.15s}
+.dot:nth-child(3){animation-delay:.3s}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
 
-    .btn-submit {
-      width: 100%; background: var(--orange); color: white; border: none;
-      border-radius: 8px; padding: 1.2rem 2rem;
-      font-family: 'DM Sans',sans-serif; font-size: 1.05rem; font-weight: 700;
-      text-transform: uppercase; letter-spacing: 1px;
-      cursor: pointer; transition: all .25s;
-      animation: ctaPulse 2.5s ease-in-out infinite;
-    }
-    .btn-submit:hover:not(:disabled) { background: var(--orange-dark); transform: translateY(-2px); box-shadow: 0 10px 35px rgba(232,93,4,.45); animation: none; }
-    .btn-submit:disabled { opacity: .35; cursor: not-allowed; animation: none; box-shadow: none; transform: none; }
-    @keyframes ctaPulse {
-      0%,100% { box-shadow: 0 0 10px 2px rgba(232,93,4,.4),0 5px 22px rgba(232,93,4,.25); }
-      50% { box-shadow: 0 0 28px 7px rgba(232,93,4,.65),0 8px 38px rgba(232,93,4,.45); }
-    }
+/* ── RESULT ── */
+.result-section{display:none;background:var(--off-white);padding:3.5rem 0}
+.result-section.show{display:block}
+.result-header{text-align:center;margin-bottom:2rem}
+.result-header h2{font-size:clamp(1.5rem,3.5vw,2rem);margin-bottom:.4rem}
+.result-header h2 em{font-style:normal;color:var(--orange)}
+.result-header p{color:var(--gray-mid);font-size:.92rem}
 
-    /* ── LOADING ── */
-    .loading-section { display: none; background: var(--off-white); padding: 6rem 1.5rem; text-align: center; }
-    .loading-section.show { display: block; }
-    .loading-icon { font-size: 3rem; display: block; animation: spin 2s linear infinite; margin-bottom: 1.2rem; }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    .loading-title { font-family: 'Montserrat',sans-serif; font-size: 1.4rem; font-weight: 800; margin-bottom: .5rem; }
-    .loading-sub { color: var(--gray-mid); font-size: .95rem; }
-    .loading-dots { display: inline-flex; gap: .3rem; margin-top: 1.5rem; }
-    .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--orange); animation: bounce .8s ease-in-out infinite; }
-    .dot:nth-child(2) { animation-delay: .15s; }
-    .dot:nth-child(3) { animation-delay: .3s; }
-    @keyframes bounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+/* Gráfico */
+.chart-card{background:white;border:2px solid var(--gray-light);border-left:6px solid var(--orange);border-radius:12px;padding:1.8rem 2rem;margin-bottom:1.8rem}
+.chart-title{font-size:.75rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--orange);margin-bottom:1rem}
+.chart-wrap{display:flex;align-items:center;justify-content:center;gap:2rem;flex-wrap:wrap}
+.chart-canvas-wrap{width:190px;height:190px;flex-shrink:0}
+.chart-legend{display:flex;flex-direction:column;gap:.45rem}
+.legend-item{display:flex;align-items:center;gap:.55rem;font-size:.82rem;color:var(--charcoal)}
+.legend-dot{width:11px;height:11px;border-radius:50%;flex-shrink:0}
+.legend-val{font-weight:700;color:var(--black);margin-left:auto;padding-left:.7rem}
 
-    /* ── RESULT ── */
-    .result-section { display: none; background: var(--off-white); padding: 4rem 0; }
-    .result-section.show { display: block; }
-    .result-header { text-align: center; margin-bottom: 2.5rem; }
-    .result-header h2 { font-size: clamp(1.6rem,3.5vw,2.2rem); margin-bottom: .5rem; }
-    .result-header h2 em { font-style: normal; color: var(--orange); }
-    .result-header p { color: var(--gray-mid); font-size: .95rem; }
+/* Diagnóstico */
+.diag-card{background:white;border:2px solid var(--gray-light);border-left:6px solid var(--orange);border-radius:12px;padding:1.8rem 2rem;margin-bottom:1.8rem}
+.diag-title{font-size:.75rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--orange);margin-bottom:.8rem}
+.diag-bullets{list-style:none;display:grid;gap:.65rem}
+.diag-bullet{display:flex;align-items:flex-start;gap:.75rem;font-size:.95rem;color:var(--charcoal);line-height:1.6}
+.diag-bullet::before{content:'◆';color:var(--orange);font-size:.55rem;flex-shrink:0;margin-top:.5rem}
 
-    .diag-card { background: white; border: 2px solid var(--gray-light); border-left: 6px solid var(--orange); border-radius: 12px; padding: 2rem 2.2rem; margin-bottom: 2rem; }
-    .diag-title { font-size: .78rem; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--orange); margin-bottom: .9rem; }
-    .diag-text { font-size: 1.03rem; color: var(--charcoal); line-height: 1.8; }
+/* Sugestões por família */
+.familia-block{margin-bottom:2rem}
+.familia-header{font-family:'Montserrat',sans-serif;font-size:.95rem;font-weight:800;color:var(--black);margin-bottom:.9rem;display:flex;align-items:center;gap:.6rem}
+.familia-tag{background:var(--orange);color:white;font-size:.65rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:.25rem .7rem;border-radius:20px}
+.familia-lacuna{font-size:.75rem;color:var(--gray-mid);font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-left:auto}
 
-    .sug-header { font-family: 'Montserrat',sans-serif; font-size: 1.2rem; font-weight: 800; color: var(--black); margin-bottom: 1.2rem; }
-    .sug-cards { display: grid; gap: 1.1rem; margin-bottom: 2.5rem; }
-    .sug-card { background: white; border: 2px solid var(--gray-light); border-radius: 12px; padding: 1.6rem 1.8rem; display: grid; grid-template-columns: 48px 1fr; gap: 1.2rem; align-items: start; transition: border-color .2s, box-shadow .2s; animation: cardIn .4s ease both; }
-    .sug-card:nth-child(2) { animation-delay: .1s; }
-    .sug-card:nth-child(3) { animation-delay: .2s; }
-    .sug-card:hover { border-color: var(--orange); box-shadow: 0 6px 24px rgba(232,93,4,.1); }
-    @keyframes cardIn { from { opacity:0;transform:translateY(14px); } to { opacity:1;transform:translateY(0); } }
-    .sug-num { width: 48px; height: 48px; border-radius: 50%; background: var(--orange); color: white; font-family: 'Montserrat',sans-serif; font-size: 1.3rem; font-weight: 900; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-    .sug-name { font-family: 'Montserrat',sans-serif; font-size: 1.05rem; font-weight: 800; color: var(--black); margin-bottom: .15rem; }
-    .sug-conc { font-size: .75rem; font-weight: 600; color: var(--gray-mid); }
-    .sug-familia { font-size: .78rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--orange); margin: .3rem 0 .6rem; }
-    .sug-reason { font-size: .93rem; color: var(--charcoal); line-height: 1.65; }
-    .sug-tags { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: .8rem; }
-    .sug-tag { background: var(--orange-muted); border: 1px solid rgba(232,93,4,.25); color: var(--orange-dark); padding: .25rem .75rem; border-radius: 20px; font-size: .73rem; font-weight: 700; letter-spacing: .5px; text-transform: uppercase; }
+.opcoes-grid{display:grid;gap:.75rem}
+.opcao-card{background:white;border:2px solid var(--gray-light);border-radius:10px;padding:1.2rem 1.5rem;display:grid;grid-template-columns:auto 1fr auto;gap:1rem;align-items:center;transition:all .2s;cursor:default}
+.opcao-card:hover{border-color:rgba(232,93,4,.4);box-shadow:0 4px 16px rgba(232,93,4,.08)}
+.opcao-card.selecionada{border-color:var(--success);background:rgba(42,157,92,.04)}
+.opcao-num{width:32px;height:32px;border-radius:50%;background:var(--off-white);border:2px solid var(--gray-light);display:flex;align-items:center;justify-content:center;font-family:'Montserrat',sans-serif;font-size:.8rem;font-weight:800;color:var(--gray-mid);flex-shrink:0;transition:all .2s}
+.opcao-card.selecionada .opcao-num{background:var(--success);border-color:var(--success);color:white}
+.opcao-nome{font-family:'Montserrat',sans-serif;font-size:.95rem;font-weight:800;color:var(--black)}
+.opcao-conc{font-size:.72rem;font-weight:600;color:var(--gray-mid)}
+.opcao-motivo{font-size:.85rem;color:var(--charcoal);line-height:1.55;margin-top:.2rem}
+.opcao-tags{display:flex;flex-wrap:wrap;gap:.35rem;margin-top:.55rem}
+.opcao-tag{background:var(--orange-muted);border:1px solid rgba(232,93,4,.2);color:var(--orange-dark);padding:.2rem .65rem;border-radius:20px;font-size:.68rem;font-weight:700;text-transform:uppercase}
+.opcao-radio{width:20px;height:20px;border-radius:50%;border:2.5px solid var(--gray-light);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .2s;cursor:pointer}
+.opcao-radio:hover{border-color:var(--orange)}
+.opcao-card.selecionada .opcao-radio{border-color:var(--success);background:var(--success)}
+.opcao-card.selecionada .opcao-radio::after{content:'✓';color:white;font-size:.7rem;font-weight:800}
 
-    /* Upsell */
-    .upsell-card { background: var(--black); border-radius: 14px; padding: 2.5rem 2rem; text-align: center; position: relative; overflow: hidden; }
-    .upsell-card::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 0%, rgba(232,93,4,.2) 0%, transparent 65%); pointer-events: none; }
-    .upsell-inner { position: relative; z-index: 2; }
-    .upsell-badge { display: inline-block; background: var(--orange); color: white; font-size: .68rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; padding: .35rem 1rem; border-radius: 20px; margin-bottom: 1.2rem; }
-    .upsell-title { font-size: clamp(1.2rem,2.5vw,1.55rem); color: white; margin-bottom: .9rem; }
-    .upsell-title em { font-style: normal; color: var(--orange); }
-    .upsell-text { color: rgba(255,255,255,.6); font-size: .95rem; line-height: 1.7; margin-bottom: 1.8rem; }
-    .btn-upsell { display: inline-block; background: var(--orange); color: white; font-family: 'DM Sans',sans-serif; font-weight: 700; font-size: 1rem; text-transform: uppercase; letter-spacing: 1px; padding: 1.1rem 2.5rem; border-radius: 8px; text-decoration: none; transition: all .25s; animation: ctaPulse 2.5s ease-in-out infinite; }
-    .btn-upsell:hover { background: var(--orange-dark); transform: translateY(-2px); animation: none; }
+/* Novas sugestões */
+.novas-wrap{text-align:center;margin:1.5rem 0 2rem}
+.btn-novas{background:white;border:2px solid var(--orange);color:var(--orange);font-family:'DM Sans',sans-serif;font-weight:700;font-size:.9rem;padding:.8rem 1.8rem;border-radius:8px;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:.6rem}
+.btn-novas:hover:not(:disabled){background:var(--orange-muted)}
+.btn-novas:disabled{opacity:.35;cursor:not-allowed}
+.novas-count{font-size:.75rem;color:var(--gray-mid);margin-top:.5rem}
 
-    .btn-reset { display: block; margin: 1.5rem auto 0; background: none; border: none; color: var(--gray-mid); font-family: 'DM Sans',sans-serif; font-size: .88rem; cursor: pointer; transition: color .2s; }
-    .btn-reset:hover { color: var(--orange); }
+/* Upsell */
+.upsell-card{background:var(--black);border-radius:14px;padding:2.2rem 1.8rem;text-align:center;position:relative;overflow:hidden}
+.upsell-card::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(232,93,4,.2) 0%,transparent 65%);pointer-events:none}
+.upsell-inner{position:relative;z-index:2}
+.upsell-badge{display:inline-block;background:var(--orange);color:white;font-size:.65rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:.3rem .9rem;border-radius:20px;margin-bottom:1rem}
+.upsell-title{font-size:clamp(1.1rem,2.5vw,1.45rem);color:white;margin-bottom:.8rem}
+.upsell-title em{font-style:normal;color:var(--orange)}
+.upsell-text{color:rgba(255,255,255,.6);font-size:.92rem;line-height:1.7;margin-bottom:1.6rem}
+.btn-upsell{display:inline-block;background:var(--orange);color:white;font-family:'DM Sans',sans-serif;font-weight:700;font-size:.95rem;text-transform:uppercase;letter-spacing:1px;padding:1rem 2.2rem;border-radius:8px;text-decoration:none;transition:all .25s;animation:ctaPulse 2.5s ease-in-out infinite}
+.btn-upsell:hover{background:var(--orange-dark);transform:translateY(-2px);animation:none}
 
-    /* Footer */
-    .footer { text-align: center; padding: 1.8rem; border-top: 1px solid var(--gray-light); color: var(--gray-mid); font-size: .82rem; }
-    .footer a { color: var(--orange); text-decoration: none; }
+.btn-reset{display:block;margin:1.3rem auto 0;background:none;border:none;color:var(--gray-mid);font-family:'DM Sans',sans-serif;font-size:.85rem;cursor:pointer;transition:color .2s}
+.btn-reset:hover{color:var(--orange)}
 
-    /* Gráfico */
-    .chart-card { background: white; border: 2px solid var(--gray-light); border-left: 6px solid var(--orange); border-radius: 12px; padding: 2rem 2.2rem; margin-bottom: 2rem; }
-    .chart-title { font-size: .78rem; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--orange); margin-bottom: 1.2rem; }
-    .chart-wrap { display: flex; align-items: center; justify-content: center; gap: 2rem; flex-wrap: wrap; }
-    .chart-canvas-wrap { width: 200px; height: 200px; flex-shrink: 0; }
-    .chart-legend { display: flex; flex-direction: column; gap: .5rem; }
-    .legend-item { display: flex; align-items: center; gap: .6rem; font-size: .85rem; color: var(--charcoal); }
-    .legend-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
-    .legend-val { font-weight: 700; color: var(--black); margin-left: auto; padding-left: .8rem; }
+/* Footer */
+.footer{text-align:center;padding:1.5rem;border-top:1px solid var(--gray-light);color:var(--gray-mid);font-size:.8rem}
+.footer a{color:var(--orange);text-decoration:none}
 
-    /* Bullet points diagnóstico */
-    .diag-bullets { list-style: none; display: grid; gap: .7rem; }
-    .diag-bullet { display: flex; align-items: flex-start; gap: .8rem; font-size: .97rem; color: var(--charcoal); line-height: 1.6; }
-    .diag-bullet::before { content: '◆'; color: var(--orange); font-size: .6rem; flex-shrink: 0; margin-top: .45rem; }
-
-    @media (max-width: 500px) {
-      .chart-canvas-wrap { width: 160px; height: 160px; }
-      .chart-wrap { gap: 1.2rem; }
-    }
-      .opt-grid { grid-template-columns: 1fr 1fr; }
-      .social-row { grid-template-columns: 1fr; }
-      .sug-card { grid-template-columns: 40px 1fr; gap: .9rem; }
-      .sug-num { width: 40px; height: 40px; font-size: 1.1rem; }
-      .form-card { padding: 1.4rem 1.2rem; }
-      .step-connector { width: 32px; }
-    }
-  </style>
+@media(max-width:560px){
+  .opt-grid{grid-template-columns:1fr 1fr}
+  .social-row{grid-template-columns:1fr}
+  .opcao-card{grid-template-columns:auto 1fr}
+  .opcao-radio{display:none}
+  .chart-canvas-wrap{width:160px;height:160px}
+  .step-connector{width:30px}
+}
+</style>
 </head>
 <body>
+
+<!-- AUTH OVERLAY -->
+<div class="auth-overlay" id="auth-overlay">
+  <div class="auth-box">
+    <div class="auth-logo">🧪 O Perfumista</div>
+    <div class="auth-title" id="auth-title">Entrar na sua conta</div>
+    <div class="auth-sub" id="auth-sub">Acesse sua coleção salva na nuvem</div>
+    <div class="auth-msg" id="auth-msg"></div>
+    <div class="auth-field" id="auth-name-field" style="display:none">
+      <label>Nome</label>
+      <input type="text" id="auth-name" placeholder="Seu nome">
+    </div>
+    <div class="auth-field">
+      <label>Email</label>
+      <input type="email" id="auth-email" placeholder="seu@email.com">
+    </div>
+    <div class="auth-field">
+      <label>Senha</label>
+      <input type="password" id="auth-senha" placeholder="Mínimo 6 caracteres">
+    </div>
+    <button class="btn-auth" id="btn-auth">Entrar</button>
+    <div class="auth-toggle">
+      <span id="auth-toggle-text">Não tem conta?</span>
+      <a id="auth-toggle-link"> Cadastrar</a>
+    </div>
+  </div>
+</div>
+
+<!-- TOPBAR -->
+<div class="topbar" id="topbar" style="display:none">
+  <div class="topbar-brand">🧪 O Perfumista</div>
+  <div class="topbar-user">
+    <span class="topbar-email" id="topbar-email"></span>
+    <button class="btn-logout" id="btn-logout">Sair</button>
+  </div>
+</div>
 
 <!-- HERO -->
 <section class="hero">
   <div class="hero-inner">
     <h1>Descubra os <span class="hl">3 Perfumes Certos</span><br>para Completar sua Coleção</h1>
-    <p>Informe o que você já tem. A I.A. analisa seu perfil olfativo e indica exatamente o que está faltando — com justificativa real.</p>
+    <p>Informe o que você já tem. A I.A. analisa seu perfil olfativo e indica exatamente o que está faltando.</p>
   </div>
 </section>
 <div class="divider"></div>
@@ -275,35 +304,20 @@
     <span class="section-label">Análise Personalizada</span>
     <h2 class="section-title">Preencha abaixo e <em>receba sua análise em segundos</em></h2>
 
-    <!-- Steps -->
     <div class="steps-bar">
-      <div class="step-item">
-        <div class="step-circle active" id="sc1">1</div>
-        <div class="step-label active" id="sl1">Coleção</div>
-      </div>
+      <div class="step-item"><div class="step-circle active" id="sc1">1</div><div class="step-label active" id="sl1">Coleção</div></div>
       <div class="step-connector" id="con1"></div>
-      <div class="step-item">
-        <div class="step-circle" id="sc2">2</div>
-        <div class="step-label" id="sl2">Orçamento</div>
-      </div>
+      <div class="step-item"><div class="step-circle" id="sc2">2</div><div class="step-label" id="sl2">Orçamento</div></div>
       <div class="step-connector" id="con2"></div>
-      <div class="step-item">
-        <div class="step-circle" id="sc3">3</div>
-        <div class="step-label" id="sl3">Contexto</div>
-      </div>
+      <div class="step-item"><div class="step-circle" id="sc3">3</div><div class="step-label" id="sl3">Contexto</div></div>
       <div class="step-connector" id="con3"></div>
-      <div class="step-item">
-        <div class="step-circle" id="sc4">4</div>
-        <div class="step-label" id="sl4">Redes</div>
-      </div>
+      <div class="step-item"><div class="step-circle" id="sc4">4</div><div class="step-label" id="sl4">Redes</div></div>
     </div>
 
     <!-- CARD 1: Coleção -->
     <div class="form-card">
       <div class="form-card-title">💼 Sua Coleção Atual</div>
-      <div class="form-card-sub">Digite perfume a perfume ou anexe um arquivo com sua lista. Mínimo 1 perfume.</div>
-
-      <!-- Entrada manual -->
+      <div class="form-card-sub">Digite perfume a perfume ou anexe um arquivo. Sua coleção é salva automaticamente na nuvem.</div>
       <div class="input-row">
         <input type="text" id="perf-input" placeholder="Nome do perfume e marca...">
         <button class="btn-add" id="btn-add" title="Adicionar">+</button>
@@ -317,95 +331,65 @@
           <option value="Parfum">Parfum</option>
         </select>
       </div>
-
-      <!-- Divisor -->
       <div class="or-divider"><span>ou anexe um arquivo</span></div>
-
-      <!-- Upload -->
       <div class="upload-area" id="upload-area">
-        <input type="file" id="file-input" accept=".pdf,.txt,.doc,.docx,.pages">
+        <input type="file" id="file-input" accept=".pdf,.txt,.doc,.docx">
         <span class="upload-icon">📂</span>
         <span class="upload-label">Clique para anexar ou arraste o arquivo</span>
-        <span class="upload-sub">PDF, Word, TXT, Notes — a I.A. extrai os perfumes automaticamente</span>
+        <span class="upload-sub">PDF, Word, TXT — a I.A. extrai os perfumes automaticamente</span>
         <div class="upload-status" id="upload-status"></div>
       </div>
-
-      <!-- Tags -->
       <div class="tags-area" id="tags-area">
         <span class="tags-empty" id="tags-empty">Sua coleção aparecerá aqui...</span>
       </div>
-      <div class="count-line">Perfumes adicionados: <span id="count">0</span></div>
+      <div class="cloud-badge" id="cloud-badge" style="display:none">☁️ Coleção sincronizada</div>
+      <div class="count-line">Perfumes: <span id="count">0</span></div>
     </div>
 
     <!-- CARD 2: Orçamento -->
     <div class="form-card">
       <div class="form-card-title">💰 Orçamento para o Próximo Perfume</div>
       <div class="form-card-sub">A I.A. respeita sua faixa de preço nas sugestões.</div>
-      <div class="opt-grid budget-grid-3" id="budget-grid">
-        <div class="opt" data-budget="até R$350">
-          <span class="v">até R$350</span>
-          <span class="l">Entrada</span>
-        </div>
-        <div class="opt" data-budget="R$350 a R$1.500">
-          <span class="v">R$350–1.500</span>
-          <span class="l">Intermediário</span>
-        </div>
-        <div class="opt" data-budget="acima de R$1.500">
-          <span class="v">R$1.500+</span>
-          <span class="l">Nicho</span>
-        </div>
+      <div class="opt-grid" id="budget-grid">
+        <div class="opt" data-budget="até R$350"><span class="v">até R$350</span><span class="l">Entrada</span></div>
+        <div class="opt" data-budget="R$350 a R$1.500"><span class="v">R$350–1.500</span><span class="l">Intermediário</span></div>
+        <div class="opt" data-budget="acima de R$1.500"><span class="v">R$1.500+</span><span class="l">Nicho</span></div>
       </div>
     </div>
 
     <!-- CARD 3: Contexto -->
     <div class="form-card">
       <div class="form-card-title">🎯 Quando Você Mais Usa Perfume?</div>
-      <div class="form-card-sub">Selecione quantos quiser. Direciona as sugestões.</div>
+      <div class="form-card-sub">Selecione quantos quiser.</div>
       <div class="opt-grid two">
-        <div class="opt ctx-opt" data-ctx="Trabalho / Dia a dia">
-          <span class="emo">💼</span><span class="v">Trabalho</span><span class="l">Dia a dia</span>
-        </div>
-        <div class="opt ctx-opt" data-ctx="Encontros / Social">
-          <span class="emo">🍷</span><span class="v">Encontros</span><span class="l">Social</span>
-        </div>
-        <div class="opt ctx-opt" data-ctx="Noite / Balada">
-          <span class="emo">🌙</span><span class="v">Noite</span><span class="l">Balada</span>
-        </div>
-        <div class="opt ctx-opt" data-ctx="Casual / Final de semana">
-          <span class="emo">☀️</span><span class="v">Casual</span><span class="l">Final de semana</span>
-        </div>
+        <div class="opt ctx-opt" data-ctx="Trabalho / Dia a dia"><span class="emo">💼</span><span class="v">Trabalho</span><span class="l">Dia a dia</span></div>
+        <div class="opt ctx-opt" data-ctx="Encontros / Social"><span class="emo">🍷</span><span class="v">Encontros</span><span class="l">Social</span></div>
+        <div class="opt ctx-opt" data-ctx="Noite / Balada"><span class="emo">🌙</span><span class="v">Noite</span><span class="l">Balada</span></div>
+        <div class="opt ctx-opt" data-ctx="Casual / Final de semana"><span class="emo">☀️</span><span class="v">Casual</span><span class="l">Final de semana</span></div>
       </div>
     </div>
 
     <!-- CARD 4: Redes Sociais -->
     <div class="form-card">
-      <div class="form-card-title">📱 Redes Sociais <span style="font-size:.8rem;font-weight:500;color:var(--gray-mid)">(opcional)</span></div>
-      <div class="form-card-sub">Informe seu Instagram e/ou TikTok para que possamos personalizar ainda mais as análises futuras.</div>
+      <div class="form-card-title">📱 Redes Sociais <span style="font-size:.78rem;font-weight:500;color:var(--gray-mid)">(opcional)</span></div>
+      <div class="form-card-sub">Para personalizar análises futuras.</div>
       <div class="social-row">
-        <div class="social-field">
-          <span class="social-prefix">@</span>
-          <input type="text" id="instagram" placeholder="instagram">
-        </div>
-        <div class="social-field">
-          <span class="social-prefix">@</span>
-          <input type="text" id="tiktok" placeholder="tiktok">
-        </div>
+        <div class="social-field"><span class="social-prefix">@</span><input type="text" id="instagram" placeholder="instagram"></div>
+        <div class="social-field"><span class="social-prefix">@</span><input type="text" id="tiktok" placeholder="tiktok"></div>
       </div>
     </div>
 
+    <!-- LGPD -->
     <div class="lgpd-box">
       <input type="checkbox" id="lgpd-check">
       <div class="lgpd-text">
         <strong>Consentimento de uso de dados (LGPD)</strong><br>
-        Concordo que meu Instagram, TikTok, coleção de perfumes e sugestões geradas sejam armazenados por Victor Guerise para fins de análise e melhoria do serviço. Os dados não serão compartilhados com terceiros. Você pode solicitar a exclusão a qualquer momento pelo e-mail <a href="mailto:vguerise@gmail.com">vguerise@gmail.com</a>.
+        Concordo que meu Instagram, TikTok, coleção de perfumes e sugestões geradas sejam armazenados por Victor Guerise para fins de análise e melhoria do serviço. Dados não serão compartilhados com terceiros. Solicite exclusão em <a href="mailto:vguerise@gmail.com">vguerise@gmail.com</a>.
       </div>
     </div>
 
     <div class="error-msg" id="error-msg">⚠️ Adicione pelo menos 1 perfume à sua coleção para continuar.</div>
-
-    <button class="btn-submit" id="btn-submit" disabled>
-      🔍 Analisar Minha Coleção Agora
-    </button>
+    <button class="btn-submit" id="btn-submit" disabled>🔍 Analisar Minha Coleção Agora</button>
   </div>
 </section>
 
@@ -413,11 +397,9 @@
 <section class="loading-section" id="loading-section">
   <div class="container">
     <span class="loading-icon">🧪</span>
-    <div class="loading-title">Analisando sua coleção...</div>
+    <div class="loading-title" id="loading-title">Analisando sua coleção...</div>
     <div class="loading-sub">Identificando famílias olfativas, perfil e gaps</div>
-    <div class="loading-dots">
-      <div class="dot"></div><div class="dot"></div><div class="dot"></div>
-    </div>
+    <div class="loading-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
   </div>
 </section>
 
@@ -429,69 +411,160 @@
       <p id="result-sub"></p>
     </div>
 
-    <!-- Gráfico pizza -->
     <div class="chart-card" id="chart-card" style="display:none">
       <div class="chart-title">📊 Distribuição por Família Olfativa</div>
       <div class="chart-wrap">
-        <div class="chart-canvas-wrap">
-          <canvas id="pizza-chart"></canvas>
-        </div>
+        <div class="chart-canvas-wrap"><canvas id="pizza-chart"></canvas></div>
         <div class="chart-legend" id="chart-legend"></div>
       </div>
     </div>
 
     <div class="diag-card">
-      <div class="diag-title">📊 Diagnóstico da Sua Coleção</div>
-      <div class="diag-text" id="diag-text"></div>
+      <div class="diag-title">📋 Diagnóstico da Sua Coleção</div>
+      <div id="diag-text"></div>
     </div>
 
-    <div class="sug-header">💡 Os 3 Perfumes Certos Para Você</div>
-    <div class="sug-cards" id="sug-cards"></div>
+    <div class="diag-card" style="border-left-color:var(--success)">
+      <div class="diag-title" style="color:var(--success)">💡 Sugestões por Família Lacunar</div>
+      <div id="sugestoes-container"></div>
+    </div>
+
+    <div class="novas-wrap">
+      <button class="btn-novas" id="btn-novas">🔄 Quero outras sugestões</button>
+      <div class="novas-count" id="novas-count">Você pode pedir novas sugestões até 3 vezes</div>
+    </div>
 
     <div class="upsell-card">
       <div class="upsell-inner">
         <div class="upsell-badge">Próximo Passo</div>
         <h3 class="upsell-title">Quer entender <em>por que</em> cada perfume<br>funciona para você?</h3>
-        <p class="upsell-text">No Curso Prático da Perfumaria você aprende a identificar seu perfil olfativo, escolher com autonomia e montar uma coleção equilibrada — sem depender de vendedor ou influenciador.</p>
-        <a class="btn-upsell" href="https://pay.hotmart.com/X104571170T?checkoutMode=10" target="_blank">
-          Ver o Curso Completo →
-        </a>
+        <p class="upsell-text">No Curso Prático da Perfumaria você aprende a identificar seu perfil olfativo, escolher com autonomia e montar uma coleção equilibrada.</p>
+        <a class="btn-upsell" href="https://pay.hotmart.com/X104571170T?checkoutMode=10" target="_blank">Ver o Curso Completo →</a>
       </div>
     </div>
-
     <button class="btn-reset" id="btn-reset">↩ Fazer nova análise</button>
   </div>
 </section>
 
-<!-- FOOTER -->
 <footer class="footer">
-  <strong style="color:var(--orange)">O Perfumista</strong> — por
-  <a href="https://vguerise.github.io/pv-curso-pratico-da-perfumaria/" target="_blank">Victor Guerise</a>
+  <strong style="color:var(--orange)">O Perfumista</strong> — por <a href="https://vguerise.github.io/pv-curso-pratico-da-perfumaria/" target="_blank">Victor Guerise</a>
 </footer>
 
 <script>
+// ── SUPABASE ──
+const SUPA_URL = 'https://dnvlorvebvcfvyhsbnbm.supabase.co';
+const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRudmxvcnZlYnZjZnZ5aHNibmJtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI0MTYzOTEsImV4cCI6MjA4Nzk5MjM5MX0.Bu1m7Kc8Hh7cVsQFVJykyUm6aE4PuGf7J8xUs9jhDJg';
+const supa = supabase.createClient(SUPA_URL, SUPA_KEY);
+
+// ── ESTADO ──
+let colecao = [];
+let budget = '';
+let contextos = [];
+let extraContexto = '';
+let currentUser = null;
+let colecaoDbId = null;
+let pizzaChartInstance = null;
+let novasCount = 0;
+let perfumesJaSugeridos = [];
+let ultimoDiagnostico = '';
+let saveTimer = null;
+
+const FAMILIA_CORES = {
+  'Fresco/Cítrico':'#F59E0B','Aromático/Verde':'#10B981','Doce/Gourmand':'#EC4899',
+  'Amadeirado':'#92400E','Especiado/Oriental':'#DC2626','Aquático/Mineral':'#3B82F6',
+  'Talco/Fougère':'#8B5CF6','Floral':'#F472B6','Frutado':'#EF4444'
+};
+
 document.addEventListener('DOMContentLoaded', function() {
 
-  // ── STATE ──
-  let colecao = [];
-  let budget = '';
-  let contextos = [];
-  let extraContexto = '';
+  // ── AUTH STATE ──
+  supa.auth.onAuthStateChange(async (event, session) => {
+    if (session && session.user) {
+      currentUser = session.user;
+      mostrarApp();
+      await carregarColecao();
+    } else {
+      currentUser = null;
+      mostrarAuth();
+    }
+  });
 
-  // ── BIND EVENTS (sem onclick inline) ──
+  // ── AUTH EVENTS ──
+  let modoAuth = 'login'; // 'login' | 'cadastro'
+
+  document.getElementById('btn-auth').addEventListener('click', async () => {
+    const email = document.getElementById('auth-email').value.trim();
+    const senha = document.getElementById('auth-senha').value;
+    const nome  = document.getElementById('auth-name').value.trim();
+    const btn   = document.getElementById('btn-auth');
+    const msg   = document.getElementById('auth-msg');
+
+    if (!email || !senha) { mostrarMsgAuth('Preencha email e senha.', 'err'); return; }
+    if (modoAuth === 'cadastro' && senha.length < 6) { mostrarMsgAuth('Senha mínimo 6 caracteres.', 'err'); return; }
+
+    btn.disabled = true;
+    btn.textContent = 'Aguarde...';
+    msg.className = 'auth-msg';
+
+    try {
+      if (modoAuth === 'login') {
+        const { error } = await supa.auth.signInWithPassword({ email, password: senha });
+        if (error) throw error;
+      } else {
+        const { error } = await supa.auth.signUp({ email, password: senha, options: { data: { nome } } });
+        if (error) throw error;
+        mostrarMsgAuth('Conta criada! Verifique seu email para confirmar.', 'ok');
+      }
+    } catch(e) {
+      const msgs = {
+        'Invalid login credentials': 'Email ou senha incorretos.',
+        'User already registered': 'Email já cadastrado. Faça login.',
+        'Email not confirmed': 'Confirme seu email antes de entrar.'
+      };
+      mostrarMsgAuth(msgs[e.message] || e.message, 'err');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = modoAuth === 'login' ? 'Entrar' : 'Criar conta';
+    }
+  });
+
+  document.getElementById('auth-toggle-link').addEventListener('click', () => {
+    modoAuth = modoAuth === 'login' ? 'cadastro' : 'login';
+    const isLogin = modoAuth === 'login';
+    document.getElementById('auth-title').textContent = isLogin ? 'Entrar na sua conta' : 'Criar conta gratuita';
+    document.getElementById('auth-sub').textContent   = isLogin ? 'Acesse sua coleção salva na nuvem' : 'Salve sua coleção na nuvem';
+    document.getElementById('auth-toggle-text').textContent = isLogin ? 'Não tem conta?' : 'Já tem conta?';
+    document.getElementById('auth-toggle-link').textContent = isLogin ? ' Cadastrar' : ' Entrar';
+    document.getElementById('btn-auth').textContent = isLogin ? 'Entrar' : 'Criar conta';
+    document.getElementById('auth-name-field').style.display = isLogin ? 'none' : 'block';
+    document.getElementById('auth-msg').className = 'auth-msg';
+  });
+
+  // Enter no auth
+  ['auth-email','auth-senha','auth-name'].forEach(id => {
+    document.getElementById(id).addEventListener('keypress', e => {
+      if (e.key === 'Enter') document.getElementById('btn-auth').click();
+    });
+  });
+
+  document.getElementById('btn-logout').addEventListener('click', async () => {
+    await supa.auth.signOut();
+  });
+
+  // ── FORM EVENTS ──
   document.getElementById('btn-add').addEventListener('click', addPerfume);
-  document.getElementById('perf-input').addEventListener('keypress', function(e) {
+  document.getElementById('perf-input').addEventListener('keypress', e => {
     if (e.key === 'Enter') { e.preventDefault(); addPerfume(); }
   });
   document.getElementById('btn-submit').addEventListener('click', analisar);
   document.getElementById('btn-reset').addEventListener('click', resetar);
+  document.getElementById('btn-novas').addEventListener('click', novasSugestoes);
   document.getElementById('lgpd-check').addEventListener('change', function() {
     document.getElementById('btn-submit').disabled = !this.checked;
   });
 
-  // Budget
-  document.querySelectorAll('#budget-grid .opt').forEach(function(el) {
-    el.addEventListener('click', function() {
+  document.querySelectorAll('#budget-grid .opt').forEach(el => {
+    el.addEventListener('click', () => {
       document.querySelectorAll('#budget-grid .opt').forEach(o => o.classList.remove('sel'));
       el.classList.add('sel');
       budget = el.dataset.budget;
@@ -499,389 +572,370 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
 
-  // Contexto
-  document.querySelectorAll('.ctx-opt').forEach(function(el) {
-    el.addEventListener('click', function() {
+  document.querySelectorAll('.ctx-opt').forEach(el => {
+    el.addEventListener('click', () => {
       const val = el.dataset.ctx;
-      if (el.classList.contains('sel')) {
-        el.classList.remove('sel');
-        contextos = contextos.filter(c => c !== val);
-      } else {
-        el.classList.add('sel');
-        contextos.push(val);
-      }
+      el.classList.toggle('sel');
+      if (el.classList.contains('sel')) contextos.push(val);
+      else contextos = contextos.filter(c => c !== val);
     });
   });
 
   // Upload
   const uploadArea = document.getElementById('upload-area');
-  const fileInput = document.getElementById('file-input');
-  uploadArea.addEventListener('dragover', function(e) { e.preventDefault(); uploadArea.classList.add('dragover'); });
-  uploadArea.addEventListener('dragleave', function() { uploadArea.classList.remove('dragover'); });
-  uploadArea.addEventListener('drop', function(e) {
+  const fileInput  = document.getElementById('file-input');
+  uploadArea.addEventListener('dragover', e => { e.preventDefault(); uploadArea.classList.add('dragover'); });
+  uploadArea.addEventListener('dragleave', () => uploadArea.classList.remove('dragover'));
+  uploadArea.addEventListener('drop', e => {
     e.preventDefault(); uploadArea.classList.remove('dragover');
     if (e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);
   });
   fileInput.addEventListener('change', function() { if (this.files[0]) handleFile(this.files[0]); });
 
-  // ── LGPD: habilita botão ──  (mantido por compatibilidade, já ligado acima)
-  function toggleSubmit() {
-    document.getElementById('btn-submit').disabled = !document.getElementById('lgpd-check').checked;
-  }
+}); // fim DOMContentLoaded
 
-  // ── CAPITALIZAR ──
-  function capitalizar(str) {
-    const minusculas = ['de','do','da','dos','das','e','em','a','o','para','com','por'];
-    return str.toLowerCase().split(' ').map((w, i) => {
-      if (i === 0 || !minusculas.includes(w)) return w.charAt(0).toUpperCase() + w.slice(1);
-      return w;
-    }).join(' ');
-  }
+// ── AUTH UI ──
+function mostrarAuth() {
+  document.getElementById('auth-overlay').style.display = 'flex';
+  document.getElementById('topbar').style.display = 'none';
+}
 
-  // ── COLEÇÃO MANUAL ──
-  function addPerfume() {
-    const input = document.getElementById('perf-input');
-    const select = document.getElementById('conc-select');
-    const nomeRaw = input.value.trim();
-    if (!nomeRaw) return;
+function mostrarApp() {
+  document.getElementById('auth-overlay').style.display = 'none';
+  document.getElementById('topbar').style.display = 'flex';
+  document.getElementById('topbar-email').textContent = currentUser.email;
+}
 
-    const nome = capitalizar(nomeRaw);
-    const conc = select.value;
-    const entrada = conc ? `${nome} ${conc}` : nome;
+function mostrarMsgAuth(texto, tipo) {
+  const el = document.getElementById('auth-msg');
+  el.textContent = texto;
+  el.className = 'auth-msg ' + tipo;
+}
 
-    if (colecao.includes(entrada)) { input.value = ''; return; }
+// ── SUPABASE: COLEÇÃO ──
+async function carregarColecao() {
+  try {
+    const { data, error } = await supa
+      .from('colecoes')
+      .select('*')
+      .eq('user_id', currentUser.id)
+      .single();
 
-    colecao.push(entrada);
-    colecao.sort((a, b) => a.localeCompare(b, 'pt-BR'));
-
-    input.value = '';
-    select.value = '';
-    renderTags();
-    atualizarSteps();
-  }
-
-  function remover(i) {
-    colecao.splice(i, 1);
-    colecao.sort((a, b) => a.localeCompare(b, 'pt-BR'));
-    renderTags();
-    atualizarSteps();
-  }
-
-  function renderTags() {
-    const area = document.getElementById('tags-area');
-    const empty = document.getElementById('tags-empty');
-    document.getElementById('count').textContent = colecao.length;
-    area.querySelectorAll('.tag').forEach(t => t.remove());
-    if (colecao.length === 0) { empty.style.display = 'block'; return; }
-    empty.style.display = 'none';
-    colecao.forEach((p, i) => {
-      const tag = document.createElement('div');
-      tag.className = 'tag';
-      const txt = document.createElement('span');
-      txt.textContent = p;
-      const x = document.createElement('span');
-      x.className = 'tag-x';
-      x.textContent = '×';
-      x.addEventListener('click', function() { remover(i); });
-      tag.appendChild(txt);
-      tag.appendChild(x);
-      area.appendChild(tag);
-    });
-  }
-
-  // ── UPLOAD DE ARQUIVO ──
-  function handleDrop(e) {
-    e.preventDefault();
-    document.getElementById('upload-area').classList.remove('dragover');
-    const file = e.dataTransfer.files[0];
-    if (file) handleFile(file);
-  }
-
-  async function handleFile(file) {
-    if (!file) return;
-    const status = document.getElementById('upload-status');
-    const allowed = ['application/pdf','text/plain','application/msword',
-      'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
-    const ext = file.name.split('.').pop().toLowerCase();
-    const allowedExt = ['pdf','txt','doc','docx','pages'];
-
-    if (!allowedExt.includes(ext)) {
-      status.textContent = '⚠️ Formato não suportado. Use PDF, TXT ou Word.';
-      status.className = 'upload-status err';
-      return;
-    }
-
-    status.textContent = '⏳ Lendo arquivo...';
-    status.className = 'upload-status loading';
-
-    try {
-      let textoArquivo = '';
-
-      if (ext === 'txt' || ext === 'pages') {
-        textoArquivo = await lerComoTexto(file);
-      } else if (ext === 'pdf') {
-        textoArquivo = await extrairTextoPDF(file);
-      } else {
-        // doc/docx — lê como texto bruto (funciona para docx em muitos casos)
-        textoArquivo = await lerComoTexto(file);
-      }
-
-      if (!textoArquivo.trim()) throw new Error('Arquivo vazio');
-
-      // Chama a API para extrair os perfumes do texto
-      status.textContent = '🧪 Extraindo perfumes com I.A....';
-      await extrairPerfumesComIA(textoArquivo);
-
-    } catch (err) {
-      console.error(err);
-      status.textContent = '❌ Erro ao ler o arquivo. Tente um TXT ou copie manualmente.';
-      status.className = 'upload-status err';
-    }
-  }
-
-  function lerComoTexto(file) {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = e => resolve(e.target.result);
-      reader.onerror = reject;
-      reader.readAsText(file, 'utf-8');
-    });
-  }
-
-  async function extrairTextoPDF(file) {
-    // Lê PDF como texto via FileReader (fallback simples — suficiente para PDFs de texto)
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = e => {
-        const arr = new Uint8Array(e.target.result);
-        let str = '';
-        for (let i = 0; i < arr.length; i++) {
-          str += String.fromCharCode(arr[i]);
-        }
-        // Extrai strings legíveis (ASCII printable)
-        const legivel = str.replace(/[^\x20-\x7E\xC0-\xFF\n\r]/g, ' ').replace(/\s+/g, ' ');
-        resolve(legivel);
-      };
-      reader.onerror = reject;
-      reader.readAsArrayBuffer(file);
-    });
-  }
-
-  async function extrairPerfumesComIA(textoArquivo) {
-    const status = document.getElementById('upload-status');
-
-    const prompt = `Você é um assistente especializado em perfumaria. Abaixo está o conteúdo de um arquivo enviado pelo usuário com sua coleção de perfumes.
-
-TAREFA:
-1. Identifique TODOS os nomes de perfumes mencionados no texto
-2. Liste cada perfume em uma linha separada, no formato: "Nome do Perfume Marca" (ex: "Sauvage Dior", "Bleu de Chanel")
-3. Guarde qualquer informação extra relevante (notas, observações, preços) como contexto adicional
-4. Retorne JSON puro sem markdown
-
-TEXTO DO ARQUIVO:
-${textoArquivo.substring(0, 3000)}
-
-FORMATO DE RESPOSTA (JSON puro, sem \`\`\`):
-{
-  "perfumes": ["Perfume 1", "Perfume 2", "Perfume 3"],
-  "contexto_extra": "Qualquer informação adicional relevante encontrada no arquivo (ou string vazia se não houver)"
-}`;
-
-    const res = await fetch('https://operfumista-api.vercel.app/api/perfumista', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ diagnostico: prompt })
-    });
-
-    if (!res.ok) throw new Error('API error');
-    const data = await res.json();
-
-    // Tenta parsear como JSON direto ou extrair do campo diagnostico
-    let parsed;
-    try {
-      // A API retorna o JSON dentro de data, mas para extração usamos diagnostico como canal
-      // Tentamos parsear data diretamente ou data.diagnostico
-      const raw = typeof data === 'string' ? data : JSON.stringify(data);
-      // Procura pelo array de perfumes na resposta
-      if (data.perfumes) {
-        parsed = data;
-      } else {
-        // Tenta extrair JSON da resposta bruta
-        const match = raw.match(/\{[\s\S]*\}/);
-        if (match) parsed = JSON.parse(match[0]);
-      }
-    } catch(e) {
-      throw new Error('Parse error');
-    }
-
-    if (parsed && parsed.perfumes && parsed.perfumes.length > 0) {
-      parsed.perfumes.forEach(p => {
-        const nome = capitalizar(p.trim());
-        if (nome && !colecao.includes(nome)) colecao.push(nome);
-      });
-      colecao.sort((a, b) => a.localeCompare(b, 'pt-BR'));
-      extraContexto = parsed.contexto_extra || '';
+    if (data && data.perfumes) {
+      colecao = data.perfumes;
+      colecaoDbId = data.id;
       renderTags();
       atualizarSteps();
-      status.textContent = `✅ ${parsed.perfumes.length} perfumes encontrados e importados!`;
-      status.className = 'upload-status ok';
-    } else {
-      status.textContent = '⚠️ Nenhum perfume identificado. Tente adicionar manualmente.';
-      status.className = 'upload-status err';
+      if (colecao.length > 0) {
+        document.getElementById('cloud-badge').style.display = 'flex';
+      }
     }
+  } catch(e) {
+    // Sem coleção ainda — ok
   }
+}
 
-  // ── BUDGET ──
-  function selBudget(el, val) {
-    document.querySelectorAll('#budget-grid .opt').forEach(o => o.classList.remove('sel'));
-    el.classList.add('sel');
-    budget = val;
+async function salvarColecaoNuvem() {
+  if (!currentUser) return;
+
+  try {
+    if (colecaoDbId) {
+      await supa.from('colecoes').update({
+        perfumes: colecao,
+        updated_at: new Date().toISOString()
+      }).eq('id', colecaoDbId);
+    } else {
+      const { data } = await supa.from('colecoes').insert({
+        user_id: currentUser.id,
+        perfumes: colecao
+      }).select().single();
+      if (data) colecaoDbId = data.id;
+    }
+    document.getElementById('cloud-badge').style.display = colecao.length > 0 ? 'flex' : 'none';
+  } catch(e) {
+    console.warn('Erro ao salvar coleção:', e);
+  }
+}
+
+// Debounce para não salvar a cada tecla
+function salvarColecaoDebounce() {
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(salvarColecaoNuvem, 800);
+}
+
+// ── CAPITALIZAR ──
+function capitalizar(str) {
+  const min = ['de','do','da','dos','das','e','em','a','o','para','com','por'];
+  return str.toLowerCase().split(' ').map((w, i) =>
+    (i === 0 || !min.includes(w)) ? w.charAt(0).toUpperCase() + w.slice(1) : w
+  ).join(' ');
+}
+
+// ── COLEÇÃO ──
+function addPerfume() {
+  const input  = document.getElementById('perf-input');
+  const select = document.getElementById('conc-select');
+  const nomeRaw = input.value.trim();
+  if (!nomeRaw) return;
+
+  const nome   = capitalizar(nomeRaw);
+  const conc   = select.value;
+  const entrada = conc ? `${nome} ${conc}` : nome;
+
+  if (colecao.includes(entrada)) { input.value = ''; return; }
+
+  colecao.push(entrada);
+  colecao.sort((a, b) => a.localeCompare(b, 'pt-BR'));
+  input.value = '';
+  select.value = '';
+  renderTags();
+  atualizarSteps();
+  salvarColecaoDebounce();
+}
+
+function remover(i) {
+  colecao.splice(i, 1);
+  colecao.sort((a, b) => a.localeCompare(b, 'pt-BR'));
+  renderTags();
+  atualizarSteps();
+  salvarColecaoDebounce();
+}
+
+function renderTags() {
+  const area  = document.getElementById('tags-area');
+  const empty = document.getElementById('tags-empty');
+  document.getElementById('count').textContent = colecao.length;
+  area.querySelectorAll('.tag').forEach(t => t.remove());
+
+  if (colecao.length === 0) { empty.style.display = 'block'; return; }
+  empty.style.display = 'none';
+
+  colecao.forEach((p, i) => {
+    const tag = document.createElement('div');
+    tag.className = 'tag';
+    const txt = document.createElement('span');
+    txt.textContent = p;
+    const x = document.createElement('span');
+    x.className = 'tag-x';
+    x.textContent = '×';
+    x.addEventListener('click', () => remover(i));
+    tag.appendChild(txt);
+    tag.appendChild(x);
+    area.appendChild(tag);
+  });
+}
+
+// ── STEPS ──
+function atualizarSteps() {
+  const set = (n, state) => {
+    const c = document.getElementById('sc'+n);
+    const l = document.getElementById('sl'+n);
+    if (!c) return;
+    c.className = 'step-circle ' + state;
+    l.className = 'step-label ' + state;
+    c.textContent = state === 'done' ? '✓' : n;
+  };
+  const setLine = (n, done) => {
+    const el = document.getElementById('con'+n);
+    if (el) el.className = 'step-connector' + (done ? ' done' : '');
+  };
+
+  if (colecao.length > 0) { set(1,'done'); setLine(1,true); set(2,'active'); }
+  else { set(1,'active'); setLine(1,false); set(2,''); }
+
+  if (budget) { set(2,'done'); setLine(2,true); set(3,'active'); }
+  else { setLine(2,false); }
+}
+
+// ── UPLOAD ──
+async function handleFile(file) {
+  const status = document.getElementById('upload-status');
+  const ext = file.name.split('.').pop().toLowerCase();
+  if (!['pdf','txt','doc','docx'].includes(ext)) {
+    status.textContent = '⚠️ Use PDF, TXT ou Word.';
+    status.className = 'upload-status err'; return;
+  }
+  status.textContent = '⏳ Lendo arquivo...';
+  status.className = 'upload-status loading';
+
+  try {
+    let texto = ext === 'pdf' ? await extrairTextoPDF(file) : await lerComoTexto(file);
+    if (!texto.trim()) throw new Error('vazio');
+
+    const encontrados = parsearPerfumes(texto);
+    if (encontrados.length === 0) throw new Error('nenhum');
+
+    encontrados.forEach(p => { if (!colecao.includes(p)) colecao.push(p); });
+    colecao.sort((a, b) => a.localeCompare(b, 'pt-BR'));
+    renderTags();
     atualizarSteps();
+    salvarColecaoDebounce();
+    status.textContent = `✅ ${encontrados.length} perfumes importados!`;
+    status.className = 'upload-status ok';
+  } catch(e) {
+    status.textContent = '❌ Não foi possível extrair. Tente um arquivo TXT.';
+    status.className = 'upload-status err';
   }
+}
 
-  // ── CONTEXTO ──
-  function togCtx(el, val) {
-    if (el.classList.contains('sel')) {
-      el.classList.remove('sel');
-      contextos = contextos.filter(c => c !== val);
-    } else {
-      el.classList.add('sel');
-      contextos.push(val);
+function parsearPerfumes(texto) {
+  const linhas = texto.split(/[\n\r]+/).map(l => l.trim()).filter(l => l.length > 2);
+  const resultado = [];
+  const reSep = /^(.+?)\s*[–\-—]\s*(.+)$/;
+  linhas.forEach(linha => {
+    if (/^\d+$/.test(linha) || linha.length > 100) return;
+    const m = linha.match(reSep);
+    if (m) {
+      resultado.push(capitalizar(m[2].trim()) + ' — ' + capitalizar(m[1].trim()));
+    } else if (linha.length >= 5 && linha.length <= 80) {
+      resultado.push(capitalizar(linha));
     }
+  });
+  return resultado;
+}
+
+function lerComoTexto(file) {
+  return new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onload = e => res(e.target.result);
+    r.onerror = rej;
+    r.readAsText(file, 'utf-8');
+  });
+}
+
+async function extrairTextoPDF(file) {
+  pdfjsLib.GlobalWorkerOptions.workerSrc =
+    'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+  const pdf = await pdfjsLib.getDocument({ data: await file.arrayBuffer() }).promise;
+  let txt = '';
+  for (let i = 1; i <= pdf.numPages; i++) {
+    const page = await pdf.getPage(i);
+    const content = await page.getTextContent();
+    let ultimoY = null, linha = [];
+    content.items.forEach(item => {
+      const y = Math.round(item.transform[5]);
+      if (ultimoY !== null && Math.abs(y - ultimoY) > 3) { txt += linha.join('') + '\n'; linha = []; }
+      linha.push(item.str);
+      ultimoY = y;
+    });
+    if (linha.length) txt += linha.join('') + '\n';
   }
+  return txt;
+}
 
-  // ── STEPS ──
-  function atualizarSteps() {
-    const set = (n, state) => {
-      const c = document.getElementById('sc'+n);
-      const l = document.getElementById('sl'+n);
-      if (!c) return;
-      c.className = 'step-circle ' + state;
-      l.className = 'step-label ' + state;
-      c.textContent = state === 'done' ? '✓' : n;
-    };
-    const setLine = (n, done) => {
-      const el = document.getElementById('con'+n);
-      if (el) el.className = 'step-connector' + (done ? ' done' : '');
-    };
+// ── ANALISAR ──
+async function analisar() {
+  const errEl = document.getElementById('error-msg');
+  if (colecao.length === 0) { errEl.classList.add('show'); return; }
+  errEl.classList.remove('show');
 
-    if (colecao.length > 0) { set(1,'done'); setLine(1,true); set(2,'active'); }
-    else { set(1,'active'); setLine(1,false); set(2,''); }
+  novasCount = 0;
+  perfumesJaSugeridos = [];
+  await buscarSugestoes(true);
+}
 
-    if (budget) { set(2,'done'); setLine(2,true); set(3,'active'); }
-    else if (colecao.length > 0) { setLine(2,false); }
+async function novasSugestoes() {
+  if (novasCount >= 3) return;
+  novasCount++;
+  await buscarSugestoes(false);
+}
 
-    // step 4 (redes) sempre visível
-    const ig = document.getElementById('instagram').value.trim();
-    const tt = document.getElementById('tiktok').value.trim();
-    if (ig || tt) { set(4,'done'); }
-  }
+async function buscarSugestoes(primeiraVez) {
+  const ctxStr    = contextos.length > 0 ? contextos.join(', ') : 'não especificado';
+  const budgetStr = budget || 'não informado';
+  const instagram = document.getElementById('instagram').value.trim();
+  const tiktok    = document.getElementById('tiktok').value.trim();
 
-  // ── ANALISAR ──
-  async function analisar() {
-    const errEl = document.getElementById('error-msg');
-    if (colecao.length === 0) { errEl.classList.add('show'); return; }
-    errEl.classList.remove('show');
+  const naoRepetir = perfumesJaSugeridos.length > 0
+    ? `\nNÃO REPITA ESTES PERFUMES JÁ SUGERIDOS: ${perfumesJaSugeridos.join(', ')}`
+    : '';
 
-    const ctxStr = contextos.length > 0 ? contextos.join(', ') : 'não especificado';
-    const budgetStr = budget || 'não informado';
-    const instagram = document.getElementById('instagram').value.trim();
-    const tiktok = document.getElementById('tiktok').value.trim();
-
-    const diagnostico = `
+  const diagnostico = `
 PERFIL DO USUÁRIO:
-Orçamento para próximo perfume: ${budgetStr}
-Contextos de uso: ${ctxStr}
-${extraContexto ? `Informações adicionais do arquivo: ${extraContexto}` : ''}
+Orçamento: ${budgetStr}
+Contextos: ${ctxStr}
+${extraContexto ? 'Contexto adicional: ' + extraContexto : ''}
 
 COLEÇÃO ATUAL (${colecao.length} perfumes):
 ${colecao.map((p,i) => `${i+1}. ${p}`).join('\n')}
 
-REGRAS OBRIGATÓRIAS:
-- Sugira APENAS perfumes disponíveis no Brasil em 2025
+REGRAS:
+- Apenas perfumes disponíveis no Brasil em 2025
 - NUNCA sugira perfumes descontinuados
-- Foque em perfumes conhecidos e com boa disponibilidade no mercado
-- Evite pérolas e joias escondidas muito nichadas — priorize perfumes com reconhecimento de mercado
-- Respeite rigorosamente o orçamento: ${budgetStr}
-- 3 sugestões de MARCAS TOTALMENTE DIFERENTES entre si
-- NUNCA sugira perfumes que o usuário já possui
+- Foque em perfumes com reconhecimento de mercado
+- Respeite o orçamento: ${budgetStr}
+- NUNCA sugira perfumes que o usuário já possui${naoRepetir}
 
-PARTE 1 — DIAGNÓSTICO:
-Escreva um parágrafo direto (3-4 frases) identificando: famílias olfativas predominantes, estilo do colecionador, pontos fortes e gaps.
+PARTE 1 — DIAGNÓSTICO (apenas na primeira análise):
+${primeiraVez ? 'Escreva 3-4 frases identificando famílias dominantes, estilo, pontos fortes e gaps.' : 'Omita o diagnóstico, retorne string vazia.'}
 
-PARTE 2 — SUGESTÕES:
-Execute o checklist de famílias olfativas e sugira 3 perfumes de marcas diferentes que preencham lacunas reais.
+PARTE 2 — EXECUTE O CHECKLIST DE FAMÍLIAS:
+Identifique as 3 famílias com MENOS ou ZERO perfumes na coleção.
+Para cada uma dessas 3 famílias lacunares, sugira EXATAMENTE 3 opções de perfumes diferentes (total: até 9 perfumes).
+Cada opção deve ser de uma marca diferente das outras dentro da mesma família.
 
-FORMATO DE RESPOSTA — JSON PURO SEM MARKDOWN:
+FORMATO JSON PURO SEM MARKDOWN:
 {
-  "diagnostico": "parágrafo aqui",
+  "diagnostico": "texto ou string vazia",
   "analise_colecao": {
     "perfumes_por_familia": {"Fresco/Cítrico":0,"Aromático/Verde":0,"Doce/Gourmand":0,"Amadeirado":0,"Especiado/Oriental":0,"Aquático/Mineral":0,"Talco/Fougère":0,"Floral":0,"Frutado":0},
     "familia_dominante": "nome",
     "top3_faltando": ["f1","f2","f3"]
   },
-  "recomendacoes": [
-    {"nome":"Nome","concentracao":"EDP","familia":"Família","faixa_preco":"R$x-y","por_que":"justificativa 2-3 frases","quando_usar":"ocasião"},
-    {"nome":"Nome","concentracao":"EDT","familia":"Família","faixa_preco":"R$x-y","por_que":"justificativa 2-3 frases","quando_usar":"ocasião"},
-    {"nome":"Nome","concentracao":"EDP","familia":"Família","faixa_preco":"R$x-y","por_que":"justificativa 2-3 frases","quando_usar":"ocasião"}
+  "sugestoes_por_familia": [
+    {
+      "familia": "Nome da Família",
+      "opcoes": [
+        {"nome":"Perfume 1","concentracao":"EDP","faixa_preco":"R$x-y","por_que":"justificativa","quando_usar":"ocasião"},
+        {"nome":"Perfume 2","concentracao":"EDT","faixa_preco":"R$x-y","por_que":"justificativa","quando_usar":"ocasião"},
+        {"nome":"Perfume 3","concentracao":"EDP","faixa_preco":"R$x-y","por_que":"justificativa","quando_usar":"ocasião"}
+      ]
+    }
   ]
 }`;
 
+  if (primeiraVez) {
     document.getElementById('form-section').style.display = 'none';
     document.getElementById('loading-section').classList.add('show');
-
-    try {
-      const res = await fetch('https://operfumista-api.vercel.app/api/perfumista', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ diagnostico })
-      });
-      if (!res.ok) throw new Error('HTTP ' + res.status);
-      const data = await res.json();
-      renderResultado(data, { instagram, tiktok });
-    } catch (err) {
-      console.error(err);
-      document.getElementById('loading-section').classList.remove('show');
-      document.getElementById('form-section').style.display = 'block';
-      errEl.textContent = '⚠️ Erro ao conectar com O Perfumista. Tente novamente.';
-      errEl.classList.add('show');
-    }
+  } else {
+    document.getElementById('loading-title').textContent = 'Buscando novas sugestões...';
+    document.getElementById('loading-section').classList.add('show');
+    document.getElementById('result-section').classList.remove('show');
   }
 
-  // ── RENDER RESULTADO ──
-  let pizzaChartInstance = null;
-
-  const FAMILIA_CORES = {
-    'Fresco/Cítrico':      '#F59E0B',
-    'Aromático/Verde':     '#10B981',
-    'Doce/Gourmand':       '#EC4899',
-    'Amadeirado':          '#92400E',
-    'Especiado/Oriental':  '#DC2626',
-    'Aquático/Mineral':    '#3B82F6',
-    'Talco/Fougère':       '#8B5CF6',
-    'Floral':              '#F472B6',
-    'Frutado':             '#EF4444',
-  };
-
-  function renderResultado(data, social) {
+  try {
+    const res = await fetch('https://operfumista-api.vercel.app/api/perfumista', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ diagnostico })
+    });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json();
+    renderResultado(data, { instagram, tiktok }, primeiraVez);
+  } catch(err) {
+    console.error(err);
     document.getElementById('loading-section').classList.remove('show');
+    if (primeiraVez) {
+      document.getElementById('form-section').style.display = 'block';
+      document.getElementById('error-msg').textContent = '⚠️ Erro ao conectar. Tente novamente.';
+      document.getElementById('error-msg').classList.add('show');
+    } else {
+      document.getElementById('result-section').classList.add('show');
+    }
+  }
+}
 
-    // ── Diagnóstico em bullet points ──
-    const diagText = data.diagnostico ||
-      (data.analise_colecao
-        ? `Família dominante: ${data.analise_colecao.familia_dominante||'—'}. Lacunas: ${(data.analise_colecao.top3_faltando||[]).join(', ')}.`
-        : 'Análise concluída.');
+// ── RENDER ──
+function renderResultado(data, social, primeiraVez) {
+  document.getElementById('loading-section').classList.remove('show');
+  document.getElementById('loading-title').textContent = 'Analisando sua coleção...';
 
-    document.getElementById('result-sub').textContent =
-      `${colecao.length} perfume${colecao.length>1?'s':''} analisado${colecao.length>1?'s':''}`;
-
-    // Converte parágrafo em bullets — divide por frases
+  // Diagnóstico (só na primeira vez)
+  if (primeiraVez && data.diagnostico) {
+    ultimoDiagnostico = data.diagnostico;
+    const frases = data.diagnostico.split(/(?<=[.!?])\s+/).map(f => f.trim()).filter(f => f.length > 4);
     const diagEl = document.getElementById('diag-text');
-    const frases = diagText
-      .split(/(?<=[.!?])\s+/)
-      .map(f => f.trim())
-      .filter(f => f.length > 4);
-
+    diagEl.innerHTML = '';
     if (frases.length > 1) {
       const ul = document.createElement('ul');
       ul.className = 'diag-bullets';
@@ -891,146 +945,160 @@ FORMATO DE RESPOSTA — JSON PURO SEM MARKDOWN:
         li.textContent = f;
         ul.appendChild(li);
       });
-      diagEl.innerHTML = '';
       diagEl.appendChild(ul);
     } else {
-      diagEl.textContent = diagText;
+      diagEl.textContent = data.diagnostico;
     }
+    document.getElementById('result-sub').textContent =
+      `${colecao.length} perfume${colecao.length>1?'s':''} analisado${colecao.length>1?'s':''}`;
+  }
 
-    // ── Gráfico pizza ──
-    const familias = data.analise_colecao?.perfumes_por_familia;
-    if (familias) {
-      const labels = Object.keys(familias).filter(k => familias[k] > 0);
-      const valores = labels.map(k => familias[k]);
-      const cores = labels.map(k => FAMILIA_CORES[k] || '#E85D04');
+  // Gráfico (só na primeira vez)
+  if (primeiraVez && data.analise_colecao?.perfumes_por_familia) {
+    renderGrafico(data.analise_colecao.perfumes_por_familia);
+  }
 
-      document.getElementById('chart-card').style.display = 'block';
+  // Sugestões por família
+  const sugestoes = data.sugestoes_por_familia || [];
 
-      if (pizzaChartInstance) pizzaChartInstance.destroy();
+  // Rastreia perfumes sugeridos para não repetir
+  sugestoes.forEach(bloco => {
+    bloco.opcoes?.forEach(op => {
+      if (!perfumesJaSugeridos.includes(op.nome)) perfumesJaSugeridos.push(op.nome);
+    });
+  });
 
-      pizzaChartInstance = new Chart(document.getElementById('pizza-chart'), {
-        type: 'doughnut',
-        data: {
-          labels,
-          datasets: [{
-            data: valores,
-            backgroundColor: cores,
-            borderWidth: 2,
-            borderColor: '#fff',
-            hoverOffset: 8
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: true,
-          cutout: '55%',
-          plugins: {
-            legend: { display: false },
-            tooltip: {
-              callbacks: {
-                label: ctx => ` ${ctx.label}: ${ctx.raw} perfume${ctx.raw>1?'s':''}`
-              }
-            }
-          }
-        }
-      });
+  const container = document.getElementById('sugestoes-container');
+  container.innerHTML = '';
 
-      // Legenda customizada
-      const legendEl = document.getElementById('chart-legend');
-      legendEl.innerHTML = '';
-      labels.forEach((l, i) => {
-        const item = document.createElement('div');
-        item.className = 'legend-item';
-        item.innerHTML = `
-          <span class="legend-dot" style="background:${cores[i]}"></span>
-          <span>${l}</span>
-          <span class="legend-val">${valores[i]}</span>`;
-        legendEl.appendChild(item);
-      });
-    }
+  sugestoes.forEach((bloco, bi) => {
+    const div = document.createElement('div');
+    div.className = 'familia-block';
+    div.innerHTML = `
+      <div class="familia-header">
+        <span class="familia-tag">Lacuna</span>
+        ${bloco.familia}
+        <span class="familia-lacuna">escolha 1</span>
+      </div>
+      <div class="opcoes-grid" id="opcoes-${bi}"></div>`;
+    container.appendChild(div);
 
-    // ── Sugestões ──
-    const grid = document.getElementById('sug-cards');
-    grid.innerHTML = '';
-    (data.recomendacoes || []).forEach((r, i) => {
+    const grid = div.querySelector(`#opcoes-${bi}`);
+    (bloco.opcoes || []).forEach((op, oi) => {
       const card = document.createElement('div');
-      card.className = 'sug-card';
+      card.className = 'opcao-card';
+      card.style.animationDelay = `${(bi*3+oi)*0.07}s`;
       card.innerHTML = `
-        <div class="sug-num">${i+1}</div>
+        <div class="opcao-num">${oi+1}</div>
         <div>
-          <div class="sug-name">${r.nome} <span class="sug-conc">${r.concentracao||''}</span></div>
-          <div class="sug-familia">${r.familia||''}</div>
-          <div class="sug-reason">${r.por_que}</div>
-          <div class="sug-tags">
-            ${r.quando_usar?`<span class="sug-tag">${r.quando_usar}</span>`:''}
-            ${r.faixa_preco?`<span class="sug-tag">${r.faixa_preco}</span>`:''}
+          <div class="opcao-nome">${op.nome} <span class="opcao-conc">${op.concentracao||''}</span></div>
+          <div class="opcao-motivo">${op.por_que}</div>
+          <div class="opcao-tags">
+            ${op.quando_usar?`<span class="opcao-tag">${op.quando_usar}</span>`:''}
+            ${op.faixa_preco?`<span class="opcao-tag">${op.faixa_preco}</span>`:''}
           </div>
-        </div>`;
+        </div>
+        <div class="opcao-radio"></div>`;
+
+      card.addEventListener('click', () => {
+        grid.querySelectorAll('.opcao-card').forEach(c => c.classList.remove('selecionada'));
+        card.classList.add('selecionada');
+      });
       grid.appendChild(card);
     });
+  });
 
-    salvarAnalise(data, social).catch(e => console.warn('Supabase save failed:', e));
+  // Botão novas sugestões
+  const restantes = 3 - novasCount;
+  const btnNovas  = document.getElementById('btn-novas');
+  const countEl   = document.getElementById('novas-count');
 
-    document.getElementById('result-section').classList.add('show');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+  if (novasCount >= 3) {
+    btnNovas.disabled = true;
+    countEl.textContent = 'Limite de novas sugestões atingido.';
+  } else {
+    btnNovas.disabled = false;
+    countEl.textContent = `Você pode pedir novas sugestões mais ${restantes} vez${restantes>1?'es':''}`;
   }
 
-  // ── SALVAR NO SUPABASE ──
-  // Substitua SUPABASE_URL e SUPABASE_ANON_KEY pelos valores do seu projeto
-  const SUPABASE_URL = 'SEU_SUPABASE_URL';
-  const SUPABASE_KEY = 'SUA_SUPABASE_ANON_KEY';
+  // Salvar análise
+  salvarAnalise(data, social).catch(e => console.warn('Supabase:', e));
 
-  async function salvarAnalise(data, social) {
-    if (SUPABASE_URL === 'SEU_SUPABASE_URL') return; // não salva se não configurado
+  document.getElementById('result-section').classList.add('show');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
 
-    const payload = {
-      instagram: social.instagram || null,
-      tiktok: social.tiktok || null,
-      colecao: colecao,
-      orcamento: budget,
-      contextos: contextos,
-      sugestoes: data.recomendacoes || [],
-      diagnostico: data.diagnostico || '',
-      created_at: new Date().toISOString()
-    };
+// ── GRÁFICO ──
+function renderGrafico(familias) {
+  const labels  = Object.keys(familias).filter(k => familias[k] > 0);
+  const valores = labels.map(k => familias[k]);
+  const cores   = labels.map(k => FAMILIA_CORES[k] || '#E85D04');
 
-    await fetch(`${SUPABASE_URL}/rest/v1/analises`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'apikey': SUPABASE_KEY,
-        'Authorization': `Bearer ${SUPABASE_KEY}`,
-        'Prefer': 'return=minimal'
-      },
-      body: JSON.stringify(payload)
-    });
-  }
+  document.getElementById('chart-card').style.display = 'block';
+  if (pizzaChartInstance) pizzaChartInstance.destroy();
 
-  // ── RESET ──
-  // ── RESET ──
-  function resetar() {
-    colecao = []; budget = ''; contextos = []; extraContexto = '';
-    renderTags();
-    document.querySelectorAll('.opt').forEach(o => o.classList.remove('sel'));
-    document.getElementById('instagram').value = '';
-    document.getElementById('tiktok').value = '';
-    document.getElementById('lgpd-check').checked = false;
-    document.getElementById('btn-submit').disabled = true;
-    document.getElementById('upload-status').textContent = '';
-    document.getElementById('upload-status').className = 'upload-status';
-    document.getElementById('file-input').value = '';
-    document.getElementById('conc-select').value = '';
-    document.getElementById('chart-card').style.display = 'none';
-    if (pizzaChartInstance) { pizzaChartInstance.destroy(); pizzaChartInstance = null; }
-    document.getElementById('chart-legend').innerHTML = '';
-    document.getElementById('result-section').classList.remove('show');
-    document.getElementById('form-section').style.display = 'block';
-    document.getElementById('error-msg').classList.remove('show');
-    atualizarSteps();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
+  pizzaChartInstance = new Chart(document.getElementById('pizza-chart'), {
+    type: 'doughnut',
+    data: { labels, datasets: [{ data: valores, backgroundColor: cores, borderWidth: 2, borderColor: '#fff', hoverOffset: 8 }] },
+    options: {
+      responsive: true, maintainAspectRatio: true, cutout: '55%',
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: ctx => ` ${ctx.label}: ${ctx.raw} perfume${ctx.raw>1?'s':''}` } }
+      }
+    }
+  });
 
-}); // fim DOMContentLoaded
+  const legendEl = document.getElementById('chart-legend');
+  legendEl.innerHTML = '';
+  labels.forEach((l, i) => {
+    const item = document.createElement('div');
+    item.className = 'legend-item';
+    item.innerHTML = `<span class="legend-dot" style="background:${cores[i]}"></span><span>${l}</span><span class="legend-val">${valores[i]}</span>`;
+    legendEl.appendChild(item);
+  });
+}
+
+// ── SALVAR ANÁLISE ──
+async function salvarAnalise(data, social) {
+  if (!currentUser) return;
+  await supa.from('analises').insert({
+    user_id: currentUser.id,
+    instagram: social.instagram || null,
+    tiktok: social.tiktok || null,
+    colecao: colecao,
+    orcamento: budget,
+    contextos: contextos,
+    sugestoes: data.sugestoes_por_familia || [],
+    diagnostico: data.diagnostico || '',
+    created_at: new Date().toISOString()
+  });
+}
+
+// ── RESET ──
+function resetar() {
+  budget = ''; contextos = []; extraContexto = '';
+  novasCount = 0; perfumesJaSugeridos = [];
+  document.querySelectorAll('.opt').forEach(o => o.classList.remove('sel'));
+  document.getElementById('instagram').value = '';
+  document.getElementById('tiktok').value = '';
+  document.getElementById('lgpd-check').checked = false;
+  document.getElementById('btn-submit').disabled = true;
+  document.getElementById('upload-status').textContent = '';
+  document.getElementById('upload-status').className = 'upload-status';
+  document.getElementById('file-input').value = '';
+  document.getElementById('conc-select').value = '';
+  document.getElementById('chart-card').style.display = 'none';
+  if (pizzaChartInstance) { pizzaChartInstance.destroy(); pizzaChartInstance = null; }
+  document.getElementById('chart-legend').innerHTML = '';
+  document.getElementById('sugestoes-container').innerHTML = '';
+  document.getElementById('diag-text').innerHTML = '';
+  document.getElementById('result-section').classList.remove('show');
+  document.getElementById('form-section').style.display = 'block';
+  document.getElementById('error-msg').classList.remove('show');
+  atualizarSteps();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
 </script>
 </body>
 </html>
