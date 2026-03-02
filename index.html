@@ -76,7 +76,22 @@
     .btn-add { background: var(--orange); color: white; border: none; border-radius: 8px; padding: .85rem 1.3rem; font-size: 1.4rem; font-weight: 900; cursor: pointer; transition: all .2s; line-height: 1; }
     .btn-add:hover { background: var(--orange-dark); transform: scale(1.05); }
 
-    /* Divider OR */
+    .budget-grid-3 { grid-template-columns: repeat(3,1fr) !important; }
+
+    /* Dropdown concentração */
+    .conc-row { display: flex; gap: .7rem; margin-top: .7rem; }
+    select.conc-select {
+      flex: 1; border: 2px solid var(--gray-light); border-radius: 8px;
+      padding: .85rem 1.1rem; font-family: 'DM Sans',sans-serif;
+      font-size: .95rem; color: var(--black); outline: none;
+      transition: border-color .2s; background: white; cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23777' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 1rem center;
+      padding-right: 2.5rem;
+    }
+    select.conc-select:focus { border-color: var(--orange); }
     .or-divider { display: flex; align-items: center; gap: 1rem; margin: 1.2rem 0; }
     .or-divider::before, .or-divider::after { content: ''; flex: 1; height: 1px; background: var(--gray-light); }
     .or-divider span { font-size: .78rem; font-weight: 700; color: var(--gray-mid); text-transform: uppercase; letter-spacing: 1px; white-space: nowrap; }
@@ -248,7 +263,6 @@
 <!-- HERO -->
 <section class="hero">
   <div class="hero-inner">
-    <div class="hero-badge">🧪 I.A. Especializada em Perfumaria Masculina</div>
     <h1>Descubra os <span class="hl">3 Perfumes Certos</span><br>para Completar sua Coleção</h1>
     <p>Informe o que você já tem. A I.A. analisa seu perfil olfativo e indica exatamente o que está faltando — com justificativa real.</p>
   </div>
@@ -292,9 +306,18 @@
       <!-- Entrada manual -->
       <div class="input-row">
         <input type="text" id="perf-input"
-               placeholder="Ex: Sauvage Dior EDP, Bleu de Chanel..."
+               placeholder="Nome do perfume e marca..."
                onkeypress="if(event.key==='Enter'){event.preventDefault();addPerfume()}">
         <button class="btn-add" onclick="addPerfume()" title="Adicionar">+</button>
+      </div>
+      <div class="conc-row">
+        <select class="conc-select" id="conc-select">
+          <option value="">Concentração (opcional)</option>
+          <option value="Colônia">Colônia</option>
+          <option value="Eau de Toilette">Eau de Toilette</option>
+          <option value="Eau de Parfum">Eau de Parfum</option>
+          <option value="Parfum">Parfum</option>
+        </select>
       </div>
 
       <!-- Divisor -->
@@ -324,7 +347,7 @@
     <div class="form-card">
       <div class="form-card-title">💰 Orçamento para o Próximo Perfume</div>
       <div class="form-card-sub">A I.A. respeita sua faixa de preço nas sugestões.</div>
-      <div class="opt-grid" id="budget-grid">
+      <div class="opt-grid budget-grid-3" id="budget-grid">
         <div class="opt" onclick="selBudget(this,'até R$350')">
           <span class="v">até R$350</span>
           <span class="l">Entrada</span>
@@ -381,7 +404,7 @@
       <input type="checkbox" id="lgpd-check" onchange="toggleSubmit()">
       <div class="lgpd-text">
         <strong>Consentimento de uso de dados (LGPD)</strong><br>
-        Concordo que meu Instagram, TikTok, coleção de perfumes e sugestões geradas sejam armazenados por Victor Guerise para fins de análise e melhoria do serviço. Os dados não serão compartilhados com terceiros. Você pode solicitar a exclusão a qualquer momento pelo e-mail <a href="mailto:vguerise@gmail.com">vguerise@gmail.com</a>.
+        Concordo que meu Instagram, TikTok, coleção de perfumes e sugestões geradas sejam armazenados por Victor Guerise para fins de análise e melhoria do serviço. Os dados não serão compartilhados com terceiros. Você pode solicitar a exclusão a qualquer momento pelo e-mail <a href="/cdn-cgi/l/email-protection#1e68796b7b6c776d7b5e79737f7772307d7173"><span class="__cf_email__" data-cfemail="84f2e3f1e1f6edf7e1c4e3e9e5ede8aae7ebe9">[email&#160;protected]</span></a>.
       </div>
     </div>
 
@@ -453,7 +476,7 @@
   <a href="https://vguerise.github.io/pv-curso-pratico-da-perfumaria/" target="_blank">Victor Guerise</a>
 </footer>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
   // ── STATE ──
   let colecao = [];
   let budget = '';
@@ -466,18 +489,43 @@
     document.getElementById('btn-submit').disabled = !checked;
   }
 
+  // ── CAPITALIZAR ──
+  function capitalizar(str) {
+    const minusculas = ['de','do','da','dos','das','e','em','a','o','para','com','por'];
+    return str.toLowerCase().split(' ').map((w, i) => {
+      if (i === 0 || !minusculas.includes(w)) return w.charAt(0).toUpperCase() + w.slice(1);
+      return w;
+    }).join(' ');
+  }
+
   // ── COLEÇÃO MANUAL ──
   function addPerfume() {
     const input = document.getElementById('perf-input');
-    const nome = input.value.trim();
-    if (!nome || colecao.includes(nome)) { input.value = ''; return; }
-    colecao.push(nome);
+    const select = document.getElementById('conc-select');
+    const nomeRaw = input.value.trim();
+    if (!nomeRaw) return;
+
+    const nome = capitalizar(nomeRaw);
+    const conc = select.value;
+    const entrada = conc ? `${nome} ${conc}` : nome;
+
+    if (colecao.includes(entrada)) { input.value = ''; return; }
+
+    colecao.push(entrada);
+    colecao.sort((a, b) => a.localeCompare(b, 'pt-BR'));
+
     input.value = '';
+    select.value = '';
     renderTags();
     atualizarSteps();
   }
 
-  function remover(i) { colecao.splice(i, 1); renderTags(); atualizarSteps(); }
+  function remover(i) {
+    colecao.splice(i, 1);
+    colecao.sort((a, b) => a.localeCompare(b, 'pt-BR'));
+    renderTags();
+    atualizarSteps();
+  }
 
   function renderTags() {
     const area = document.getElementById('tags-area');
@@ -621,9 +669,10 @@ FORMATO DE RESPOSTA (JSON puro, sem \`\`\`):
 
     if (parsed && parsed.perfumes && parsed.perfumes.length > 0) {
       parsed.perfumes.forEach(p => {
-        const nome = p.trim();
+        const nome = capitalizar(p.trim());
         if (nome && !colecao.includes(nome)) colecao.push(nome);
       });
+      colecao.sort((a, b) => a.localeCompare(b, 'pt-BR'));
       extraContexto = parsed.contexto_extra || '';
       renderTags();
       atualizarSteps();
@@ -922,7 +971,5 @@ FORMATO DE RESPOSTA — JSON PURO SEM MARKDOWN:
     document.getElementById('upload-status').textContent = '';
     document.getElementById('upload-status').className = 'upload-status';
     document.getElementById('file-input').value = '';
-    document.getElementById('chart-card').style.display = 'none';
-    if (pizzaChartInstance) { pizzaChartInstance.destroy(); pizzaChartInstance = null; }
-    document.getElementById('chart-legend').innerHTML = '';
-    document.getElementById('result-section').classList.
+    document.getElementById('conc-select').value = '';
+    document.getElementById('c
