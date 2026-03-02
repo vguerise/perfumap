@@ -34,8 +34,8 @@ h1,h2,h3{font-family:'Montserrat',sans-serif;line-height:1.2}
 .ab{width:100%;max-width:390px}
 .alo{font-family:'Montserrat',sans-serif;font-weight:900;font-size:.9rem;color:var(--or);letter-spacing:2px;text-transform:uppercase;margin-bottom:2.2rem;display:flex;align-items:center;gap:.55rem}
 .alo::before{content:'';width:24px;height:24px;background:var(--or);border-radius:6px;flex-shrink:0}
-.ah{font-size:clamp(1.7rem,5vw,2.2rem);font-weight:900;margin-bottom:.35rem}
-.as2{color:var(--tx2);font-size:.88rem;margin-bottom:1.8rem}
+.auh{font-size:clamp(1.7rem,5vw,2.2rem);font-weight:900;margin-bottom:.35rem}
+.aus{color:var(--tx2);font-size:.88rem;margin-bottom:1.8rem}
 .af{margin-bottom:.95rem}
 .af label{display:block;font-size:.72rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--tx2);margin-bottom:.42rem}
 .afinp{width:100%;background:var(--s1);border:1.5px solid var(--bd);border-radius:10px;padding:.88rem 1rem;font-family:'DM Sans',sans-serif;font-size:.94rem;color:var(--tx);outline:none;transition:border-color .2s}
@@ -51,26 +51,26 @@ h1,h2,h3{font-family:'Montserrat',sans-serif;line-height:1.2}
 /* ══ LOADING ══ */
 .lo{position:fixed;inset:0;background:rgba(14,14,14,.9);z-index:1000;display:none;align-items:center;justify-content:center;backdrop-filter:blur(6px)}
 .lo.sh{display:flex}
-.lb{text-align:center}
-.li{font-size:2.2rem;display:block;animation:spin 2s linear infinite;margin-bottom:.85rem}
+.lbox{text-align:center}
+.lic{font-size:2.2rem;display:block;animation:spin 2s linear infinite;margin-bottom:.85rem}
 @keyframes spin{to{transform:rotate(360deg)}}
-.lt2{font-family:'Montserrat',sans-serif;font-size:1rem;font-weight:800;color:var(--tx);margin-bottom:.22rem}
+.ltt{font-family:'Montserrat',sans-serif;font-size:1rem;font-weight:800;color:var(--tx);margin-bottom:.22rem}
 .lsb{font-size:.78rem;color:var(--tx2)}
 .dots{display:inline-flex;gap:.26rem;margin-top:.85rem}
 .dot{width:6px;height:6px;border-radius:50%;background:var(--or);animation:bnc .8s ease-in-out infinite}
 .dot:nth-child(2){animation-delay:.15s}.dot:nth-child(3){animation-delay:.3s}
 @keyframes bnc{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
 
-/* ══ APP SHELL ══ */
+/* ══ APP ══ */
 .app{display:flex;height:100vh;height:100dvh}
 
 /* ── SIDEBAR ── */
 .sdbar{width:var(--sw);flex-shrink:0;background:var(--s1);border-right:1px solid var(--bd);display:flex;flex-direction:column}
 .sdtop{padding:1.3rem 1rem .9rem;border-bottom:1px solid var(--bd)}
 .brand{display:flex;align-items:center;gap:.65rem;margin-bottom:1.3rem}
-.brand-ic{width:32px;height:32px;background:var(--or);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.85rem}
-.brand-nm{font-family:'Montserrat',sans-serif;font-weight:900;font-size:.88rem;color:var(--tx)}
-.brand-tg{font-size:.6rem;color:var(--tx2)}
+.bric{width:32px;height:32px;background:var(--or);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.85rem}
+.brnm{font-family:'Montserrat',sans-serif;font-weight:900;font-size:.88rem;color:var(--tx)}
+.brtg{font-size:.6rem;color:var(--tx2)}
 .uchip{display:flex;align-items:center;gap:.52rem;background:var(--s2);border-radius:8px;padding:.52rem .72rem}
 .uav{width:26px;height:26px;border-radius:50%;background:var(--or);display:flex;align-items:center;justify-content:center;font-family:'Montserrat',sans-serif;font-size:.68rem;font-weight:800;color:#fff;flex-shrink:0}
 .uem{font-size:.72rem;color:var(--tx2);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -81,7 +81,7 @@ h1,h2,h3{font-family:'Montserrat',sans-serif;line-height:1.2}
 .navit:hover{background:var(--s2)}
 .navit.ac{background:var(--orm);border-color:rgba(232,93,4,.22)}
 .navic{font-size:1rem;width:20px;text-align:center;flex-shrink:0}
-.navla{font-size:.84rem;font-weight:600;color:var(--tx2);transition:color .2s}
+.navla{font-size:.84rem;font-weight:600;color:var(--tx2)}
 .navit.ac .navla{color:var(--or)}
 .navct{margin-left:auto;background:var(--s2);color:var(--tx2);font-size:.67rem;font-weight:700;padding:.12rem .48rem;border-radius:20px;min-width:22px;text-align:center}
 .navit.ac .navct{background:var(--or);color:#fff}
@@ -91,6 +91,10 @@ h1,h2,h3{font-family:'Montserrat',sans-serif;line-height:1.2}
 .mn{flex:1;overflow:hidden;display:flex;flex-direction:column;min-width:0}
 .tc{flex:1;overflow-y:auto;overflow-x:hidden}
 .tpane{display:none}.tpane.ac{display:block}
+.pg-hdr{padding:1.5rem 2rem .9rem;border-bottom:1px solid var(--bd)}
+.pg-hdr h2{font-size:1.2rem;font-weight:900;margin-bottom:.12rem}
+.pg-hdr p{font-size:.79rem;color:var(--tx2)}
+.pg-body{padding:1.2rem 2rem 3rem}
 
 /* ══ INPUTS GLOBAIS ══ */
 .inp{background:var(--s2);border:1.5px solid var(--bd);border-radius:9px;padding:.75rem .95rem;font-family:'DM Sans',sans-serif;font-size:.88rem;color:var(--tx);outline:none;transition:border-color .2s;width:100%}
@@ -98,66 +102,26 @@ h1,h2,h3{font-family:'Montserrat',sans-serif;line-height:1.2}
 select.inp{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='7'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23666' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right .9rem center;padding-right:2.1rem}
 .card{background:var(--s1);border:1px solid var(--bd);border-radius:13px;padding:1.4rem;margin-bottom:1.1rem}
 .clabel{font-size:.66rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--or);margin-bottom:.85rem}
-.bprim{background:var(--or);color:#fff;border:none;border-radius:10px;padding:1rem 1.8rem;font-family:'DM Sans',sans-serif;font-size:.92rem;font-weight:700;cursor:pointer;transition:all .2s}
-.bprim:hover{background:var(--ord)}.bprim:disabled{opacity:.3;cursor:not-allowed}
-.bsec{background:var(--s2);border:1.5px solid var(--bd);border-radius:9px;padding:.68rem 1.1rem;color:var(--tx2);font-family:'DM Sans',sans-serif;font-size:.8rem;font-weight:600;cursor:pointer;transition:all .2s}
-.bsec:hover{border-color:var(--or);color:var(--or)}
-.pg-hdr{padding:1.5rem 2rem .9rem;border-bottom:1px solid var(--bd)}
-.pg-hdr h2{font-size:1.2rem;font-weight:900;margin-bottom:.12rem}
-.pg-hdr p{font-size:.79rem;color:var(--tx2)}
-.pg-body{padding:1.2rem 2rem 3rem}
 
-/* ══ ABA PERFIL ══ */
-.nivel-hero{background:linear-gradient(135deg,var(--s2) 0%,var(--s1) 100%);border:1px solid var(--bd);border-radius:14px;padding:1.6rem;margin-bottom:1.1rem;position:relative;overflow:hidden}
-.nivel-hero::before{content:'';position:absolute;top:-40px;right:-40px;width:160px;height:160px;background:radial-gradient(circle,var(--org) 0%,transparent 70%);pointer-events:none}
-.nivel-row{display:flex;align-items:center;gap:1.1rem;margin-bottom:1.1rem}
-.nivel-badge{width:64px;height:64px;border-radius:50%;background:var(--or);display:flex;align-items:center;justify-content:center;font-size:1.8rem;flex-shrink:0;box-shadow:0 0 24px var(--org)}
-.nivel-info{flex:1;min-width:0}
-.nivel-name{font-size:1.1rem;color:var(--tx);font-weight:700}
-.nivel-title{font-family:'Montserrat',sans-serif;font-size:1.4rem;font-weight:900;color:var(--or);line-height:1.1}
-.nivel-sub{font-size:.76rem;color:var(--tx2);margin-top:.15rem}
-.nivel-bar-wrap{margin-bottom:.5rem}
-.nivel-bar-labels{display:flex;justify-content:space-between;font-size:.7rem;color:var(--tx2);margin-bottom:.4rem}
-.nivel-bar-bg{height:7px;background:var(--s3);border-radius:4px;overflow:hidden}
-.nivel-bar-fill{height:100%;background:linear-gradient(90deg,var(--or),var(--ord));border-radius:4px;transition:width .6s ease}
-
-/* Conquistas */
-.conq-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem}
-.conq-item{background:var(--s2);border:1px solid var(--bd);border-radius:11px;padding:.85rem .6rem;text-align:center;transition:all .3s;position:relative}
-.conq-item.desbloqueada{border-color:rgba(232,93,4,.35);background:var(--orm)}
-.conq-item.desbloqueada .ci-ico{filter:none;transform:scale(1.05)}
-.ci-ico{font-size:1.6rem;display:block;margin-bottom:.35rem;filter:grayscale(1) opacity(.35);transition:all .3s}
-.ci-nm{font-size:.64rem;font-weight:700;color:var(--tx3);line-height:1.3;transition:color .3s}
-.conq-item.desbloqueada .ci-nm{color:var(--or)}
-.conq-selo{position:absolute;top:.3rem;right:.3rem;width:16px;height:16px;background:var(--ok);border-radius:50%;display:none;align-items:center;justify-content:center;font-size:.55rem;color:#fff}
-.conq-item.desbloqueada .conq-selo{display:flex}
-
-/* Stories card */
-.stories-wrap{text-align:center}
-.stories-preview{width:100%;max-width:280px;margin:0 auto 1rem;display:block;border-radius:16px;border:1px solid var(--bd)}
-.bshare{background:linear-gradient(135deg,#833ab4,#fd1d1d,#fcb045);color:#fff;border:none;border-radius:10px;padding:.85rem 1.8rem;font-family:'DM Sans',sans-serif;font-size:.88rem;font-weight:700;cursor:pointer;transition:opacity .2s;display:inline-flex;align-items:center;gap:.5rem}
-.bshare:hover{opacity:.88}
-
-/* Formulário perfil */
+/* ══ ABA 1 — PERFIL / DADOS ══ */
 .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:.75rem}
-.form-grid.full{grid-template-columns:1fr}
 .form-field label{display:block;font-size:.72rem;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--tx2);margin-bottom:.4rem}
-.bsalvar{background:var(--or);color:#fff;border:none;border-radius:10px;padding:.88rem 1.6rem;font-family:'DM Sans',sans-serif;font-size:.88rem;font-weight:700;cursor:pointer;transition:background .2s;display:flex;align-items:center;gap:.5rem}
+.bsalvar{background:var(--or);color:#fff;border:none;border-radius:10px;padding:.88rem 1.6rem;font-family:'DM Sans',sans-serif;font-size:.88rem;font-weight:700;cursor:pointer;transition:background .2s;display:inline-flex;align-items:center;gap:.5rem;margin-top:.4rem}
 .bsalvar:hover{background:var(--ord)}
-.salvo-msg{font-size:.78rem;color:var(--ok);margin-left:.8rem;display:none}
-.salvo-msg.sh{display:inline}
+.salvo{font-size:.78rem;color:var(--ok);margin-left:.75rem;display:none}
+.salvo.sh{display:inline}
 
-/* ══ ABA COLEÇÃO ══ */
+/* ══ ABA 2 — COLEÇÃO ══ */
 .ctls{display:flex;gap:.55rem;margin-top:.85rem;flex-wrap:wrap}
 .iw{display:flex;gap:.5rem;flex:1;min-width:190px}
 .bai{background:var(--or);border:none;border-radius:9px;padding:.75rem 1rem;color:#fff;font-size:1.15rem;font-weight:900;cursor:pointer;transition:all .2s;flex-shrink:0;line-height:1}
 .bai:hover{background:var(--ord);transform:scale(1.04)}
 .sw2{position:relative;flex:1;min-width:130px}
-.sw2 .sico{position:absolute;left:.78rem;top:50%;transform:translateY(-50%);color:var(--tx3);font-size:.78rem;pointer-events:none}
+.sico{position:absolute;left:.78rem;top:50%;transform:translateY(-50%);color:var(--tx3);font-size:.78rem;pointer-events:none}
 .inp.sr{padding-left:2.1rem}
 .dz{border:2px dashed var(--bd);border-radius:12px;padding:1rem;text-align:center;cursor:pointer;transition:all .2s;margin-bottom:.9rem;position:relative}
 .dz:hover,.dz.dg{border-color:var(--or);background:var(--orm)}
-.dz input[type="file"]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.dz input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
 .dl{font-size:.8rem;color:var(--tx2)}.dl strong{color:var(--tx)}
 .us{font-size:.74rem;font-weight:600;margin-top:.38rem;min-height:1em}
 .us.ok{color:var(--ok)}.us.er{color:var(--er)}.us.ld{color:var(--or)}
@@ -180,10 +144,57 @@ select.inp{cursor:pointer;appearance:none;background-image:url("data:image/svg+x
 .es .ei{font-size:2rem;opacity:.3;margin-bottom:.65rem}
 .es p{font-size:.83rem;line-height:1.7}
 
-/* ══ ABA ANÁLISE ══ */
+/* ══ ABA 3 — ANÁLISE ══ */
 .al2{padding:1.5rem 2rem 4rem;max-width:820px}
-.slabel{font-size:.66rem;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--or);margin-bottom:.52rem}
-.stitle{font-size:.94rem;font-weight:800;color:var(--tx);margin-bottom:.82rem}
+
+/* Nível hero */
+.nivel-hero{background:var(--s1);border:1px solid var(--bd);border-radius:14px;padding:1.5rem;margin-bottom:1.1rem;position:relative;overflow:hidden}
+.nivel-hero::before{content:'';position:absolute;top:-40px;right:-40px;width:160px;height:160px;background:radial-gradient(circle,var(--org) 0%,transparent 70%);pointer-events:none}
+.nivel-row{display:flex;align-items:center;gap:1rem;margin-bottom:1rem}
+.nivel-badge{width:60px;height:60px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.7rem;flex-shrink:0}
+.nivel-info{flex:1;min-width:0}
+.nivel-name{font-size:1rem;font-weight:600;color:var(--tx)}
+.nivel-title{font-family:'Montserrat',sans-serif;font-size:1.35rem;font-weight:900;line-height:1.1}
+.nivel-sub{font-size:.74rem;color:var(--tx2);margin-top:.12rem}
+.nv-bar-labels{display:flex;justify-content:space-between;font-size:.68rem;color:var(--tx2);margin-bottom:.38rem}
+.nv-bar-bg{height:7px;background:var(--s3);border-radius:4px;overflow:hidden}
+.nv-bar-fill{height:100%;border-radius:4px;transition:width .6s ease}
+
+/* Ranking */
+.rank-card{background:var(--s1);border:1px solid var(--bd);border-radius:13px;padding:1.4rem;margin-bottom:1.1rem;display:grid;grid-template-columns:auto 1fr auto;gap:1.1rem;align-items:center}
+.rank-pos{font-family:'Montserrat',sans-serif;font-size:2rem;font-weight:900;color:var(--tx3);line-height:1;min-width:50px;text-align:center}
+.rank-pos.top1{color:#FFD700}
+.rank-pos.top2{color:#C0C0C0}
+.rank-pos.top3{color:#CD7F32}
+.rank-info{min-width:0}
+.rank-label{font-size:.66rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--or);margin-bottom:.3rem}
+.rank-txt{font-size:.82rem;color:var(--tx2);line-height:1.65}
+.rank-score-wrap{text-align:right}
+.rank-score{font-family:'Montserrat',sans-serif;font-size:1.6rem;font-weight:900;color:var(--tx);line-height:1}
+.rank-score-label{font-size:.68rem;color:var(--tx2);margin-top:.1rem}
+.rank-breakdown{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.75rem;padding-top:.75rem;border-top:1px solid var(--bd);grid-column:1/-1}
+.rbk{background:var(--s2);border:1px solid var(--bd);border-radius:8px;padding:.38rem .75rem;font-size:.72rem;color:var(--tx2);display:flex;align-items:center;gap:.35rem}
+.rbk span{color:var(--or);font-weight:700}
+
+/* Conquistas */
+.conq-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.55rem}
+.cqi{background:var(--s2);border:1px solid var(--bd);border-radius:11px;padding:.82rem .55rem;text-align:center;transition:all .3s;position:relative;cursor:default}
+.cqi.ok{border-color:rgba(232,93,4,.32);background:var(--orm)}
+.cqi-ic{font-size:1.55rem;display:block;margin-bottom:.32rem;filter:grayscale(1) opacity(.3);transition:all .3s}
+.cqi.ok .cqi-ic{filter:none;transform:scale(1.05)}
+.cqi-nm{font-size:.62rem;font-weight:700;color:var(--tx3);line-height:1.3;transition:color .3s}
+.cqi.ok .cqi-nm{color:var(--or)}
+.cqi-chk{position:absolute;top:.3rem;right:.3rem;width:15px;height:15px;background:var(--ok);border-radius:50%;display:none;align-items:center;justify-content:center;font-size:.5rem;color:#fff}
+.cqi.ok .cqi-chk{display:flex}
+
+/* Stories */
+.stories-wrap{text-align:center}
+.bshare{background:linear-gradient(135deg,#833ab4,#fd1d1d,#fcb045);color:#fff;border:none;border-radius:10px;padding:.82rem 1.7rem;font-family:'DM Sans',sans-serif;font-size:.87rem;font-weight:700;cursor:pointer;transition:opacity .2s;display:inline-flex;align-items:center;gap:.5rem}
+.bshare:hover{opacity:.88}
+
+/* Formulário análise */
+.slabel{font-size:.66rem;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--or);margin-bottom:.5rem}
+.stitle{font-size:.94rem;font-weight:800;color:var(--tx);margin-bottom:.8rem}
 .sblk{margin-bottom:1.6rem}
 .og{display:grid;gap:.5rem}
 .og.c3{grid-template-columns:repeat(3,1fr)}
@@ -200,7 +211,7 @@ select.inp{cursor:pointer;appearance:none;background-image:url("data:image/svg+x
 .spfx{position:absolute;left:.82rem;top:50%;transform:translateY(-50%);color:var(--tx3);font-size:.88rem;pointer-events:none;font-weight:600}
 .swrap .inp{padding-left:1.72rem}
 .lgpd{background:var(--s1);border:1px solid var(--bd);border-radius:10px;padding:.95rem 1.1rem;display:flex;align-items:flex-start;gap:.78rem;margin-bottom:1.15rem}
-.lgpd input[type="checkbox"]{width:16px;height:16px;flex-shrink:0;margin-top:.18rem;accent-color:var(--or);cursor:pointer}
+.lgpd input[type=checkbox]{width:16px;height:16px;flex-shrink:0;margin-top:.18rem;accent-color:var(--or);cursor:pointer}
 .lgpdt{font-size:.75rem;color:var(--tx2);line-height:1.65}
 .lgpdt a{color:var(--or)}
 .emsg{background:rgba(231,76,60,.08);border:1px solid rgba(231,76,60,.25);border-radius:8px;padding:.68rem .95rem;color:var(--er);font-size:.8rem;margin-bottom:.82rem;display:none}
@@ -210,7 +221,7 @@ select.inp{cursor:pointer;appearance:none;background-image:url("data:image/svg+x
 .bpulse:disabled{opacity:.3;cursor:not-allowed;animation:none;transform:none;box-shadow:none}
 @keyframes glow{0%,100%{box-shadow:0 0 12px 2px var(--org)}50%{box-shadow:0 0 30px 8px rgba(232,93,4,.5)}}
 
-/* resultado */
+/* Resultado */
 .rw{display:none}.rw.sh{display:block}
 .rsep{height:1px;background:var(--bd);margin:2rem 0}
 .rh{font-size:1.3rem;font-weight:900;margin-bottom:.28rem}
@@ -229,7 +240,7 @@ select.inp{cursor:pointer;appearance:none;background-image:url("data:image/svg+x
 .nchv{color:var(--wn);transition:transform .25s;font-size:.7rem;font-weight:700}
 .nchv.op{transform:rotate(180deg)}
 .ncbd{display:none;margin-bottom:1rem}.ncbd.op{display:block}
-.ncsubtt{font-size:.78rem;color:var(--tx2);margin-bottom:.82rem;line-height:1.65}
+.ncsub{font-size:.78rem;color:var(--tx2);margin-bottom:.82rem;line-height:1.65}
 .nclist{display:grid;gap:.4rem;max-height:290px;overflow-y:auto}
 .nci{display:grid;grid-template-columns:1fr auto;align-items:center;gap:.62rem;background:var(--s1);border:1px solid var(--bd);border-radius:9px;padding:.58rem .82rem}
 .ncn{font-size:.8rem;color:var(--tx)}
@@ -276,7 +287,7 @@ select.inp{cursor:pointer;appearance:none;background-image:url("data:image/svg+x
 
 /* ══ BOTTOM NAV ══ */
 .bnav{display:none;position:fixed;bottom:0;left:0;right:0;height:calc(var(--bn) + var(--sb));background:var(--s1);border-top:1px solid var(--bd);z-index:100;padding-bottom:var(--sb)}
-.bnav-i{display:flex;height:var(--bn)}
+.bnavi{display:flex;height:var(--bn)}
 .bni{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.2rem;cursor:pointer;border:none;background:none;padding:.32rem;transition:all .2s}
 .bnic{font-size:1.2rem;transition:transform .2s}.bnil{font-family:'DM Sans',sans-serif;font-size:.6rem;font-weight:600;color:var(--tx3);transition:color .2s}
 .bni.ac .bnic{transform:scale(1.1)}.bni.ac .bnil{color:var(--or)}
@@ -293,7 +304,8 @@ select.inp{cursor:pointer;appearance:none;background-image:url("data:image/svg+x
   .oc{grid-template-columns:auto 1fr}.ocr{display:none}
   .nbar{flex-direction:column;align-items:flex-start;gap:.55rem}
   .form-grid{grid-template-columns:1fr}
-  .conq-grid{grid-template-columns:repeat(3,1fr)}
+  .rank-card{grid-template-columns:auto 1fr}
+  .rank-score-wrap{display:none}
 }
 @media(max-width:440px){.iw{flex-direction:column}.ctls{flex-direction:column}}
 </style>
@@ -304,8 +316,8 @@ select.inp{cursor:pointer;appearance:none;background-image:url("data:image/svg+x
 <div class="ao" id="ao">
   <div class="ab">
     <div class="alo">O Perfumista</div>
-    <h1 class="ah" id="auh">Bem-vindo de volta</h1>
-    <p class="as2" id="aus">Acesse sua coleção salva na nuvem</p>
+    <h1 class="auh" id="auh">Bem-vindo de volta</h1>
+    <p class="aus" id="aus">Acesse sua coleção salva na nuvem</p>
     <div class="amsg" id="amsg"></div>
     <div class="af h" id="anf">
       <label>Nome</label>
@@ -326,9 +338,9 @@ select.inp{cursor:pointer;appearance:none;background-image:url("data:image/svg+x
 
 <!-- LOADING -->
 <div class="lo" id="lo">
-  <div class="lb">
-    <span class="li">🧪</span>
-    <div class="lt2" id="lt2">Analisando sua coleção...</div>
+  <div class="lbox">
+    <span class="lic">🧪</span>
+    <div class="ltt" id="ltt">Analisando sua coleção...</div>
     <div class="lsb">Identificando famílias olfativas e gaps</div>
     <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
   </div>
@@ -336,13 +348,11 @@ select.inp{cursor:pointer;appearance:none;background-image:url("data:image/svg+x
 
 <!-- APP -->
 <div class="app h" id="app">
-
-  <!-- SIDEBAR -->
   <aside class="sdbar">
     <div class="sdtop">
       <div class="brand">
-        <div class="brand-ic">🧪</div>
-        <div><div class="brand-nm">O Perfumista</div><div class="brand-tg">Análise com I.A.</div></div>
+        <div class="bric">🧪</div>
+        <div><div class="brnm">O Perfumista</div><div class="brtg">Análise com I.A.</div></div>
       </div>
       <div class="uchip">
         <div class="uav" id="uav">?</div>
@@ -351,61 +361,23 @@ select.inp{cursor:pointer;appearance:none;background-image:url("data:image/svg+x
       </div>
     </div>
     <nav class="navlist">
-      <div class="navit ac" data-tab="perfil"><span class="navic">👤</span><span class="navla">Meu Perfil</span></div>
+      <div class="navit ac" data-tab="perfil"><span class="navic">👤</span><span class="navla">Meus Dados</span></div>
       <div class="navit" data-tab="colecao"><span class="navic">📦</span><span class="navla">Coleção</span><span class="navct" id="nct">0</span></div>
       <div class="navit" data-tab="analise"><span class="navic">📊</span><span class="navla">Análise I.A.</span></div>
     </nav>
     <div class="sdver">O Perfumista v2.1 — PWA</div>
   </aside>
 
-  <!-- MAIN -->
   <main class="mn">
     <div class="tc">
 
-      <!-- ══ ABA PERFIL ══ -->
+      <!-- ══ ABA 1: DADOS PESSOAIS ══ -->
       <div class="tpane ac" id="tab-perfil">
         <div class="pg-hdr">
-          <h2>Meu Perfil</h2>
-          <p>Suas informações e progresso como colecionador</p>
+          <h2>Meus Dados</h2>
+          <p>Informações pessoais que personalizam sua análise</p>
         </div>
         <div class="pg-body">
-
-          <!-- Nível -->
-          <div class="nivel-hero">
-            <div class="nivel-row">
-              <div class="nivel-badge" id="nv-badge">🌱</div>
-              <div class="nivel-info">
-                <div class="nivel-name" id="nv-nome">—</div>
-                <div class="nivel-title" id="nv-titulo">Iniciante</div>
-                <div class="nivel-sub" id="nv-sub">0 perfumes</div>
-              </div>
-            </div>
-            <div class="nivel-bar-wrap">
-              <div class="nivel-bar-labels">
-                <span id="nv-bar-cur">0</span>
-                <span id="nv-bar-next">próximo nível: 11</span>
-              </div>
-              <div class="nivel-bar-bg"><div class="nivel-bar-fill" id="nv-bar" style="width:0%"></div></div>
-            </div>
-          </div>
-
-          <!-- Conquistas -->
-          <div class="card">
-            <div class="clabel">🏆 Conquistas por Família Olfativa</div>
-            <div class="conq-grid" id="conq-grid"></div>
-          </div>
-
-          <!-- Stories -->
-          <div class="card">
-            <div class="clabel">📸 Compartilhar para Stories</div>
-            <div class="stories-wrap">
-              <canvas id="stories-canvas" class="stories-preview" width="540" height="960" style="display:none"></canvas>
-              <p style="font-size:.8rem;color:var(--tx2);margin-bottom:1rem">Gere um card para compartilhar sua coleção no Instagram</p>
-              <button class="bshare" id="bshare">✨ Gerar card para Stories</button>
-            </div>
-          </div>
-
-          <!-- Formulário de perfil -->
           <div class="card">
             <div class="clabel">✏️ Dados Pessoais</div>
             <div class="form-grid">
@@ -438,7 +410,7 @@ select.inp{cursor:pointer;appearance:none;background-image:url("data:image/svg+x
                 </select>
               </div>
             </div>
-            <div class="form-grid">
+            <div class="form-grid" style="grid-template-columns:1fr">
               <div class="form-field">
                 <label>Orçamento padrão</label>
                 <select class="inp" id="pf-budget">
@@ -449,16 +421,15 @@ select.inp{cursor:pointer;appearance:none;background-image:url("data:image/svg+x
                 </select>
               </div>
             </div>
-            <div style="display:flex;align-items:center;margin-top:.5rem">
-              <button class="bsalvar" id="bsalvar">💾 Salvar perfil</button>
-              <span class="salvo-msg" id="salvo-msg">✓ Salvo!</span>
+            <div style="display:flex;align-items:center">
+              <button class="bsalvar" id="bsalvar">💾 Salvar dados</button>
+              <span class="salvo" id="salvo">✓ Salvo com sucesso!</span>
             </div>
           </div>
-
         </div>
       </div>
 
-      <!-- ══ ABA COLEÇÃO ══ -->
+      <!-- ══ ABA 2: COLEÇÃO ══ -->
       <div class="tpane" id="tab-colecao">
         <div class="pg-hdr">
           <h2>Minha Coleção</h2>
@@ -473,7 +444,7 @@ select.inp{cursor:pointer;appearance:none;background-image:url("data:image/svg+x
                 <option value="EDP">EDP</option>
                 <option value="Parfum">Parfum</option>
               </select>
-              <button class="bai" id="badd" title="Adicionar">+</button>
+              <button class="bai" id="badd">+</button>
             </div>
             <div class="sw2">
               <span class="sico">🔍</span>
@@ -498,14 +469,64 @@ select.inp{cursor:pointer;appearance:none;background-image:url("data:image/svg+x
         </div>
       </div>
 
-      <!-- ══ ABA ANÁLISE ══ -->
+      <!-- ══ ABA 3: ANÁLISE I.A. ══ -->
       <div class="tpane" id="tab-analise">
         <div class="al2">
-          <div style="margin-bottom:1.6rem;padding-top:.2rem">
+          <div style="margin-bottom:1.5rem;padding-top:.2rem">
             <h2 style="font-size:1.2rem;font-weight:900;margin-bottom:.12rem">Análise I.A.</h2>
             <p style="font-size:.79rem;color:var(--tx2)">Analisando os <span id="fc" style="color:var(--or);font-weight:700">0</span> perfumes da sua coleção</p>
           </div>
 
+          <!-- Nível -->
+          <div class="nivel-hero">
+            <div class="nivel-row">
+              <div class="nivel-badge" id="nv-badge">🌱</div>
+              <div class="nivel-info">
+                <div class="nivel-name" id="nv-nome">—</div>
+                <div class="nivel-title" id="nv-titulo">Iniciante</div>
+                <div class="nivel-sub" id="nv-sub">0 perfumes</div>
+              </div>
+            </div>
+            <div class="nv-bar-labels">
+              <span id="nv-cur">0</span>
+              <span id="nv-next">próximo nível: 11</span>
+            </div>
+            <div class="nv-bar-bg"><div class="nv-bar-fill" id="nv-bar" style="width:0%"></div></div>
+          </div>
+
+          <!-- Ranking privado -->
+          <div class="rank-card" id="rank-card">
+            <div class="rank-pos" id="rank-pos">—</div>
+            <div class="rank-info">
+              <div class="rank-label">🏅 Seu ranking</div>
+              <div class="rank-txt" id="rank-txt">Calculando sua posição...</div>
+            </div>
+            <div class="rank-score-wrap">
+              <div class="rank-score" id="rank-score">—</div>
+              <div class="rank-score-label">pontos</div>
+            </div>
+            <div class="rank-breakdown" id="rank-breakdown"></div>
+          </div>
+
+          <!-- Conquistas -->
+          <div class="card">
+            <div class="clabel">🏆 Conquistas por Família Olfativa</div>
+            <div class="conq-grid" id="conq-grid"></div>
+          </div>
+
+          <!-- Stories -->
+          <div class="card">
+            <div class="clabel">📸 Compartilhar para Stories</div>
+            <div class="stories-wrap">
+              <p style="font-size:.8rem;color:var(--tx2);margin-bottom:1rem">Gere um card para compartilhar sua coleção no Instagram</p>
+              <button class="bshare" id="bshare">✨ Gerar card para Stories</button>
+            </div>
+          </div>
+
+          <!-- Separador -->
+          <div style="height:1px;background:var(--bd);margin:1.5rem 0"></div>
+
+          <!-- Formulário -->
           <div class="sblk">
             <div class="slabel">Orçamento</div>
             <div class="stitle">Quanto você quer gastar no próximo perfume?</div>
@@ -547,12 +568,11 @@ select.inp{cursor:pointer;appearance:none;background-image:url("data:image/svg+x
           <div class="emsg" id="emsg"></div>
           <button class="bpulse" id="ban" disabled>🔍 Analisar Coleção Agora</button>
 
-          <!-- RESULTADO -->
+          <!-- Resultado -->
           <div class="rw" id="rw">
             <div class="rsep"></div>
             <h2 class="rh">Análise <em>Concluída</em></h2>
             <p class="rsub" id="rsub"></p>
-
             <div class="card h" id="cc">
               <div class="clabel">📊 Distribuição por Família Olfativa</div>
               <div class="cw2">
@@ -560,7 +580,6 @@ select.inp{cursor:pointer;appearance:none;background-image:url("data:image/svg+x
                 <div class="clg" id="clg"></div>
               </div>
             </div>
-
             <div id="ncwrap" class="h">
               <div class="nctog" id="nctog">
                 <span>⚠️</span>
@@ -569,28 +588,21 @@ select.inp{cursor:pointer;appearance:none;background-image:url("data:image/svg+x
                 <span class="nchv" id="nchv">▼</span>
               </div>
               <div class="ncbd" id="ncbd">
-                <div class="ncsubtt">A I.A. não identificou a família olfativa destes perfumes. Classifique os que souber — o gráfico será atualizado.</div>
+                <div class="ncsub">A I.A. não identificou a família olfativa destes perfumes. Classifique os que souber — o gráfico será atualizado.</div>
                 <div class="nclist" id="nclist"></div>
                 <div class="ncprog" id="ncprog"></div>
                 <button class="batu" id="batu" disabled>✅ Atualizar gráfico</button>
               </div>
             </div>
-
-            <div class="card" id="dc">
-              <div class="clabel">📋 Diagnóstico</div>
-              <div id="dct"></div>
-            </div>
-
+            <div class="card" id="dc"><div class="clabel">📋 Diagnóstico</div><div id="dct"></div></div>
             <div class="card" id="sc">
               <div class="clabel" style="color:var(--ok)">💡 Sugestões por Família Lacunar</div>
               <div id="sct"></div>
             </div>
-
             <div class="nbar">
               <div class="nbari"><strong>Quer outras opções?</strong> <span id="nit">Você pode pedir novas sugestões até 3 vezes.</span></div>
               <button class="bnov" id="bnov">🔄 Novas sugestões</button>
             </div>
-
             <div class="upsell">
               <div class="upi">
                 <div class="upbg">Próximo passo</div>
@@ -604,18 +616,19 @@ select.inp{cursor:pointer;appearance:none;background-image:url("data:image/svg+x
         </div>
       </div>
 
-    </div><!-- /tc -->
+    </div>
   </main>
-</div><!-- /app -->
+</div>
 
-<!-- BOTTOM NAV -->
 <nav class="bnav h" id="bnav">
-  <div class="bnav-i">
-    <button class="bni ac" data-tab="perfil"><span class="bnic">👤</span><span class="bnil">Perfil</span></button>
+  <div class="bnavi">
+    <button class="bni ac" data-tab="perfil"><span class="bnic">👤</span><span class="bnil">Dados</span></button>
     <button class="bni" data-tab="colecao"><span class="bnic">📦</span><span class="bnil">Coleção</span></button>
     <button class="bni" data-tab="analise"><span class="bnic">📊</span><span class="bnil">Análise</span></button>
   </div>
 </nav>
+
+<canvas id="stories-canvas" style="display:none" width="540" height="960"></canvas>
 
 <script>
 // ── CONFIG ──
@@ -626,18 +639,18 @@ const DB=supabase.createClient(SURL,SKEY);
 // ── PWA ──
 const mf={name:'O Perfumista',short_name:'Perfumista',description:'Análise de coleção com I.A.',start_url:'./',display:'standalone',background_color:'#0E0E0E',theme_color:'#E85D04',icons:[{src:'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><rect width="512" height="512" rx="80" fill="%23E85D04"/><text x="256" y="340" text-anchor="middle" font-size="260">🧪</text></svg>',sizes:'512x512',type:'image/svg+xml'}]};
 document.getElementById('pwa-manifest').href=URL.createObjectURL(new Blob([JSON.stringify(mf)],{type:'application/manifest+json'}));
-if('serviceWorker'in navigator){const sw=`const C='pf-v2';self.addEventListener('install',e=>e.waitUntil(caches.open(C).then(c=>c.addAll(['./']))));self.addEventListener('fetch',e=>e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request))));`;navigator.serviceWorker.register(URL.createObjectURL(new Blob([sw],{type:'application/javascript'}))).catch(()=>{});}
+if('serviceWorker'in navigator){const sw=`const C='pf-v3';self.addEventListener('install',e=>e.waitUntil(caches.open(C).then(c=>c.addAll(['./']))));self.addEventListener('fetch',e=>e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request))));`;navigator.serviceWorker.register(URL.createObjectURL(new Blob([sw],{type:'application/javascript'}))).catch(()=>{});}
 
 // ── NÍVEIS ──
 const NIVEIS=[
-  {min:0,  max:10,  emoji:'🌱',titulo:'Iniciante',    cor:'#2ECC71'},
-  {min:11, max:25,  emoji:'🔥',titulo:'Entusiasta',   cor:'#F59E0B'},
-  {min:26, max:50,  emoji:'💎',titulo:'Colecionador', cor:'#3B82F6'},
-  {min:51, max:100, emoji:'🏆',titulo:'Expert',       cor:'#8B5CF6'},
-  {min:101,max:9999,emoji:'👑',titulo:'Curador',      cor:'#E85D04'},
+  {min:0,  max:10,  emoji:'🌱',titulo:'Iniciante',    cor:'#2ECC71', bonus:0},
+  {min:11, max:25,  emoji:'🔥',titulo:'Entusiasta',   cor:'#F59E0B', bonus:10},
+  {min:26, max:50,  emoji:'💎',titulo:'Colecionador', cor:'#3B82F6', bonus:25},
+  {min:51, max:100, emoji:'🏆',titulo:'Expert',       cor:'#8B5CF6', bonus:50},
+  {min:101,max:9999,emoji:'👑',titulo:'Curador',      cor:'#E85D04', bonus:100},
 ];
 
-// ── FAMÍLIAS / CONQUISTAS ──
+// ── FAMÍLIAS ──
 const FAMS=['Fresco/Cítrico','Aromático/Verde','Doce/Gourmand','Amadeirado','Especiado/Oriental','Aquático/Mineral','Talco/Fougère','Floral','Frutado'];
 const FICONS={'Fresco/Cítrico':'🍋','Aromático/Verde':'🌿','Doce/Gourmand':'🍫','Amadeirado':'🪵','Especiado/Oriental':'🌶️','Aquático/Mineral':'🌊','Talco/Fougère':'💫','Floral':'🌸','Frutado':'🍓'};
 const FCOR={'Fresco/Cítrico':'#F59E0B','Aromático/Verde':'#10B981','Doce/Gourmand':'#EC4899','Amadeirado':'#92400E','Especiado/Oriental':'#DC2626','Aquático/Mineral':'#3B82F6','Talco/Fougère':'#8B5CF6','Floral':'#F472B6','Frutado':'#EF4444'};
@@ -646,9 +659,27 @@ const FCOR={'Fresco/Cítrico':'#F59E0B','Aromático/Verde':'#10B981','Doce/Gourm
 let user=null,dbId=null,perfilId=null;
 let col=[];
 let perfil={nome:'',cidade:'',clima:'',idade:'',budget:''};
-let budget='',ctxs=[],extraCtx='';
+let budget='',ctxs=[];
 let chart=null,famBase={},naoClass=[],classExtras={};
 let novasN=0,jaSug=[],saveT=null,srch='';
+
+// ── SCORE ──
+function calcScore(){
+  const n=col.length;
+  const nv=calcNivel(n);
+  const famsClass=new Set(col.filter(p=>p.familia).map(p=>p.familia)).size;
+  return {
+    total: n + (famsClass*10) + nv.bonus,
+    perfumes: n,
+    familias: famsClass,
+    nivelBonus: nv.bonus,
+    nivel: nv
+  };
+}
+
+function calcNivel(n){
+  return NIVEIS.find(v=>n>=v.min&&n<=v.max)||NIVEIS[NIVEIS.length-1];
+}
 
 document.addEventListener('DOMContentLoaded',()=>{
   DB.auth.onAuthStateChange((_,s)=>{
@@ -656,13 +687,12 @@ document.addEventListener('DOMContentLoaded',()=>{
     else{user=null;mostrarAuth();}
   });
 
-  // Auth
-  let modo='login';
+  let modoAuth='login';
   document.getElementById('bauth').addEventListener('click',fazerAuth);
   ['aue','aupw','aun'].forEach(id=>document.getElementById(id)?.addEventListener('keypress',e=>{if(e.key==='Enter')fazerAuth();}));
   document.getElementById('alink').addEventListener('click',()=>{
-    modo=modo==='login'?'cadastro':'login';
-    const L=modo==='login';
+    modoAuth=modoAuth==='login'?'cadastro':'login';
+    const L=modoAuth==='login';
     document.getElementById('auh').textContent=L?'Bem-vindo de volta':'Criar conta gratuita';
     document.getElementById('aus').textContent=L?'Acesse sua coleção salva na nuvem':'Salve sua coleção na nuvem';
     document.getElementById('atxt').textContent=L?'Não tem conta?':'Já tem conta?';
@@ -672,27 +702,20 @@ document.addEventListener('DOMContentLoaded',()=>{
     document.getElementById('amsg').className='amsg';
   });
 
-  // Tabs
   document.querySelectorAll('[data-tab]').forEach(el=>el.addEventListener('click',()=>goTab(el.dataset.tab)));
-
-  // Perfil
   document.getElementById('bsalvar').addEventListener('click',salvarPerfil);
   document.getElementById('bshare').addEventListener('click',gerarStories);
   document.getElementById('blo').addEventListener('click',()=>DB.auth.signOut());
-
-  // Coleção
   document.getElementById('badd').addEventListener('click',addP);
   document.getElementById('pi').addEventListener('keypress',e=>{if(e.key==='Enter'){e.preventDefault();addP();}});
   document.getElementById('srch').addEventListener('input',function(){srch=this.value.toLowerCase();renderCol();});
 
-  // Upload
   const dz=document.getElementById('dz'),fi=document.getElementById('fi');
   dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('dg');});
   dz.addEventListener('dragleave',()=>dz.classList.remove('dg'));
   dz.addEventListener('drop',e=>{e.preventDefault();dz.classList.remove('dg');if(e.dataTransfer.files[0])handleFile(e.dataTransfer.files[0]);});
   fi.addEventListener('change',function(){if(this.files[0])handleFile(this.files[0]);});
 
-  // Análise
   document.querySelectorAll('#bg .obt').forEach(el=>el.addEventListener('click',()=>{
     document.querySelectorAll('#bg .obt').forEach(o=>o.classList.remove('sl'));
     el.classList.add('sl');budget=el.dataset.b;
@@ -751,6 +774,7 @@ async function iniciar(){
   await Promise.all([carregarCol(),carregarPerfil()]);
   renderNivel();
   renderConquistas();
+  await renderRanking();
 }
 function mostrarAuth(){
   document.getElementById('ao').style.display='flex';
@@ -794,13 +818,9 @@ async function carregarPerfil(){
       document.getElementById('pf-clima').value=perfil.clima;
       document.getElementById('pf-idade').value=perfil.idade;
       document.getElementById('pf-budget').value=perfil.budget;
-      document.getElementById('nv-nome').textContent=perfil.nome||user.email.split('@')[0];
-    } else {
-      document.getElementById('nv-nome').textContent=user.email.split('@')[0];
     }
-  }catch(_){
-    document.getElementById('nv-nome').textContent=user.email.split('@')[0];
-  }
+  }catch(_){}
+  document.getElementById('nv-nome').textContent=perfil.nome||user.email.split('@')[0];
 }
 
 async function salvarCol(){
@@ -810,6 +830,8 @@ async function salvarCol(){
     if(dbId){await DB.from('colecoes').update({perfumes:col,updated_at:new Date().toISOString()}).eq('id',dbId);}
     else{const{data}=await DB.from('colecoes').insert({user_id:user.id,perfumes:col}).select().single();if(data)dbId=data.id;}
     cloud('sy','☁️ Sincronizado');
+    // Atualiza score no ranking
+    await atualizarScore();
   }catch(_){cloud('','⚠️ Erro ao salvar');}
 }
 
@@ -824,7 +846,7 @@ async function salvarPerfil(){
     const payload={user_id:user.id,...perfil,updated_at:new Date().toISOString()};
     if(perfilId){await DB.from('perfis').update(payload).eq('id',perfilId);}
     else{const{data}=await DB.from('perfis').insert(payload).select().single();if(data)perfilId=data.id;}
-    const msg=document.getElementById('salvo-msg');
+    const msg=document.getElementById('salvo');
     msg.classList.add('sh');setTimeout(()=>msg.classList.remove('sh'),2500);
   }catch(e){console.warn('Perfil:',e);}
 }
@@ -832,48 +854,92 @@ async function salvarPerfil(){
 function cloud(c,t){const el=document.getElementById('cl2');el.className='cl2'+(c?' '+c:'');el.textContent=t;}
 function deb(){clearTimeout(saveT);saveT=setTimeout(salvarCol,800);}
 
-// ══════ NÍVEL ══════
-function calcNivel(n){
-  return NIVEIS.find(v=>n>=v.min&&n<=v.max)||NIVEIS[NIVEIS.length-1];
+// ══════ RANKING ══════
+async function atualizarScore(){
+  if(!user)return;
+  const sc=calcScore();
+  try{
+    await DB.from('rankings').upsert({
+      user_id:user.id,
+      score:sc.total,
+      perfumes:sc.perfumes,
+      familias:sc.familias,
+      nivel:sc.nivel.titulo,
+      updated_at:new Date().toISOString()
+    },{onConflict:'user_id'});
+  }catch(_){}
 }
 
+async function renderRanking(){
+  const sc=calcScore();
+  document.getElementById('rank-score').textContent=sc.total;
+
+  // Breakdown
+  const bd=document.getElementById('rank-breakdown');
+  bd.innerHTML=`
+    <div class="rbk">📦 Perfumes: <span>${sc.perfumes}</span> × 1 = <span>${sc.perfumes}</span> pts</div>
+    <div class="rbk">🌿 Famílias: <span>${sc.familias}</span> × 10 = <span>${sc.familias*10}</span> pts</div>
+    <div class="rbk">⭐ Bônus nível: <span>+${sc.nivelBonus}</span> pts</div>`;
+
+  try{
+    await atualizarScore();
+    // Conta quantos usuários têm score maior
+    const{count}=await DB.from('rankings').select('*',{count:'exact',head:true}).gt('score',sc.total);
+    const pos=(count||0)+1;
+    const posEl=document.getElementById('rank-pos');
+    posEl.textContent='#'+pos;
+    posEl.className='rank-pos'+(pos===1?' top1':pos===2?' top2':pos===3?' top3':'');
+
+    const{count:total}=await DB.from('rankings').select('*',{count:'exact',head:true});
+    const totalUsers=total||1;
+    const pct=Math.round((1-(pos-1)/totalUsers)*100);
+    document.getElementById('rank-txt').textContent=
+      `Você está entre os ${pct}% melhores — posição ${pos} de ${totalUsers} colecionadores`;
+  }catch(_){
+    document.getElementById('rank-pos').textContent='#?';
+    document.getElementById('rank-txt').textContent=`Seu score: ${sc.total} pontos`;
+  }
+}
+
+// ══════ NÍVEL ══════
 function renderNivel(){
   const n=col.length;
   const nv=calcNivel(n);
-  const proximo=NIVEIS.find(v=>v.min>nv.min);
+  const prox=NIVEIS.find(v=>v.min>nv.min);
   document.getElementById('nv-badge').textContent=nv.emoji;
-  document.getElementById('nv-badge').style.background=nv.cor;
-  document.getElementById('nv-badge').style.boxShadow=`0 0 24px ${nv.cor}66`;
+  document.getElementById('nv-badge').style.background=nv.cor+'22';
+  document.getElementById('nv-badge').style.boxShadow=`0 0 20px ${nv.cor}44`;
   document.getElementById('nv-titulo').textContent=nv.titulo;
   document.getElementById('nv-titulo').style.color=nv.cor;
   document.getElementById('nv-sub').textContent=`${n} perfume${n!==1?'s':''} na coleção`;
   document.getElementById('nct').textContent=n;
-  if(proximo){
-    const prog=Math.round(((n-nv.min)/(proximo.min-nv.min))*100);
-    document.getElementById('nv-bar').style.width=prog+'%';
-    document.getElementById('nv-bar-cur').textContent=n;
-    document.getElementById('nv-bar-next').textContent=`próximo nível: ${proximo.min}`;
+  document.getElementById('nv-nome').textContent=perfil.nome||user?.email?.split('@')[0]||'—';
+  if(prox){
+    const p=Math.round(((n-nv.min)/(prox.min-nv.min))*100);
+    document.getElementById('nv-bar').style.width=p+'%';
+    document.getElementById('nv-bar').style.background=`linear-gradient(90deg,${nv.cor},${nv.cor}99)`;
+    document.getElementById('nv-cur').textContent=n;
+    document.getElementById('nv-next').textContent=`próximo nível: ${prox.min}`;
   }else{
     document.getElementById('nv-bar').style.width='100%';
-    document.getElementById('nv-bar-cur').textContent=n;
-    document.getElementById('nv-bar-next').textContent='Nível máximo atingido 👑';
+    document.getElementById('nv-bar').style.background=nv.cor;
+    document.getElementById('nv-cur').textContent=n;
+    document.getElementById('nv-next').textContent='Nível máximo 👑';
   }
+  document.getElementById('fc').textContent=col.length;
 }
 
 // ══════ CONQUISTAS ══════
 function renderConquistas(){
   const grid=document.getElementById('conq-grid');
   grid.innerHTML='';
-  const famsColeção=new Set(col.filter(p=>p.familia).map(p=>p.familia));
+  const famsCol=new Set(col.filter(p=>p.familia).map(p=>p.familia));
   FAMS.forEach(fam=>{
-    const desbloqueada=famsColeção.has(fam);
+    const ok=famsCol.has(fam);
     const div=document.createElement('div');
-    div.className='conq-item'+(desbloqueada?' desbloqueada':'');
-    div.innerHTML=`
-      <span class="ci-ico">${FICONS[fam]||'🌀'}</span>
-      <span class="ci-nm">${fam}</span>
-      <span class="conq-selo">✓</span>`;
-    div.title=desbloqueada?`✓ ${fam} desbloqueada!`:`Adicione um perfume ${fam} para desbloquear`;
+    div.className='cqi'+(ok?' ok':'');
+    div.title=ok?`✓ ${fam} desbloqueada!`:`Classifique um perfume ${fam} para desbloquear`;
+    div.innerHTML=`<span class="cqi-ic">${FICONS[fam]||'🌀'}</span><span class="cqi-nm">${fam}</span><span class="cqi-chk">✓</span>`;
     grid.appendChild(div);
   });
 }
@@ -881,97 +947,61 @@ function renderConquistas(){
 // ══════ STORIES ══════
 function gerarStories(){
   const canvas=document.getElementById('stories-canvas');
-  canvas.style.display='block';
   const ctx=canvas.getContext('2d');
   const W=540,H=960;
+  const sc=calcScore();
+  const nv=sc.nivel;
 
-  // Fundo
   ctx.fillStyle='#0E0E0E';
   ctx.fillRect(0,0,W,H);
-
-  // Gradiente sutil
-  const grd=ctx.createRadialGradient(W/2,200,50,W/2,200,400);
-  grd.addColorStop(0,'rgba(232,93,4,0.18)');
+  const grd=ctx.createRadialGradient(W/2,200,50,W/2,200,420);
+  grd.addColorStop(0,nv.cor+'30');
   grd.addColorStop(1,'rgba(14,14,14,0)');
-  ctx.fillStyle=grd;
-  ctx.fillRect(0,0,W,H);
+  ctx.fillStyle=grd;ctx.fillRect(0,0,W,H);
 
-  const nv=calcNivel(col.length);
-
-  // Emoji nível
-  ctx.font='90px serif';
-  ctx.textAlign='center';
-  ctx.fillText(nv.emoji,W/2,220);
+  // Badge emoji
+  ctx.font='88px serif';ctx.textAlign='center';ctx.fillText(nv.emoji,W/2,220);
 
   // Título nível
-  ctx.font='bold 52px Montserrat, sans-serif';
-  ctx.fillStyle=nv.cor;
-  ctx.fillText(nv.titulo,W/2,310);
+  ctx.font='bold 50px Montserrat,sans-serif';ctx.fillStyle=nv.cor;ctx.fillText(nv.titulo,W/2,305);
 
   // Nome
   const nome=perfil.nome||user?.email?.split('@')[0]||'Colecionador';
-  ctx.font='500 32px DM Sans, sans-serif';
-  ctx.fillStyle='rgba(240,240,240,0.65)';
-  ctx.fillText(nome,W/2,360);
+  ctx.font='500 30px DM Sans,sans-serif';ctx.fillStyle='rgba(240,240,240,0.6)';ctx.fillText(nome,W/2,352);
 
-  // Linha separadora
-  ctx.strokeStyle='rgba(255,255,255,0.1)';
-  ctx.lineWidth=1;
-  ctx.beginPath();ctx.moveTo(80,400);ctx.lineTo(W-80,400);ctx.stroke();
+  // Separador
+  ctx.strokeStyle='rgba(255,255,255,0.1)';ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(80,392);ctx.lineTo(W-80,392);ctx.stroke();
 
-  // Número de perfumes
-  ctx.font='bold 86px Montserrat, sans-serif';
-  ctx.fillStyle='#FFFFFF';
-  ctx.fillText(col.length,W/2,510);
+  // Número de perfumes (destaque)
+  ctx.font='bold 88px Montserrat,sans-serif';ctx.fillStyle='#FFFFFF';ctx.fillText(col.length,W/2,502);
+  ctx.font='500 27px DM Sans,sans-serif';ctx.fillStyle='rgba(240,240,240,0.5)';
+  ctx.fillText(`perfume${col.length!==1?'s':''} na coleção`,W/2,548);
 
-  ctx.font='500 28px DM Sans, sans-serif';
-  ctx.fillStyle='rgba(240,240,240,0.55)';
-  ctx.fillText(`perfume${col.length!==1?'s':''} na coleção`,W/2,558);
-
-  // Conquistas desbloqueadas
-  const famsColeção=new Set(col.filter(p=>p.familia).map(p=>p.familia));
-  const desbloq=[...famsColeção].length;
-  if(desbloq>0){
-    ctx.font='500 24px DM Sans, sans-serif';
-    ctx.fillStyle='rgba(240,240,240,0.4)';
-    ctx.fillText(`${desbloq} famíl${desbloq>1?'ias':'ia'} olfativa${desbloq>1?'s':''} explorada${desbloq>1?'s':''}`,W/2,615);
-  }
+  // Score
+  ctx.font='bold 38px Montserrat,sans-serif';ctx.fillStyle=nv.cor;ctx.fillText(sc.total+' pts',W/2,615);
+  ctx.font='500 22px DM Sans,sans-serif';ctx.fillStyle='rgba(240,240,240,0.35)';ctx.fillText('score de colecionador',W/2,648);
 
   // Barra progresso
-  const proximo=NIVEIS.find(v=>v.min>calcNivel(col.length).min);
-  if(proximo){
-    const prog=(col.length-calcNivel(col.length).min)/(proximo.min-calcNivel(col.length).min);
-    ctx.fillStyle='rgba(255,255,255,0.08)';
-    roundRect(ctx,80,660,W-160,12,6);ctx.fill();
-    ctx.fillStyle=nv.cor;
-    roundRect(ctx,80,660,Math.max(12,(W-160)*prog),12,6);ctx.fill();
-    ctx.font='500 20px DM Sans, sans-serif';
-    ctx.fillStyle='rgba(240,240,240,0.35)';
-    ctx.fillText(`${col.length}/${proximo.min} para ${proximo.titulo}`,W/2,702);
+  const prox=NIVEIS.find(v=>v.min>nv.min);
+  if(prox){
+    const p=(col.length-nv.min)/(prox.min-nv.min);
+    ctx.fillStyle='rgba(255,255,255,0.08)';rRect(ctx,80,690,W-160,10,5);ctx.fill();
+    ctx.fillStyle=nv.cor;rRect(ctx,80,690,Math.max(10,(W-160)*p),10,5);ctx.fill();
+    ctx.font='500 19px DM Sans,sans-serif';ctx.fillStyle='rgba(240,240,240,0.3)';
+    ctx.fillText(`${col.length}/${prox.min} para ${prox.titulo}`,W/2,728);
   }
 
   // Watermark
-  ctx.font='bold 22px Montserrat, sans-serif';
-  ctx.fillStyle='rgba(232,93,4,0.7)';
-  ctx.fillText('🧪 O Perfumista',W/2,880);
-  ctx.font='500 18px DM Sans, sans-serif';
-  ctx.fillStyle='rgba(240,240,240,0.25)';
-  ctx.fillText('operfumista.com.br',W/2,910);
+  ctx.font='bold 21px Montserrat,sans-serif';ctx.fillStyle='rgba(232,93,4,0.7)';ctx.fillText('🧪 O Perfumista',W/2,878);
+  ctx.font='500 17px DM Sans,sans-serif';ctx.fillStyle='rgba(240,240,240,0.22)';ctx.fillText('operfumista.com.br',W/2,906);
 
-  // Download
   const a=document.createElement('a');
   a.download='operfumista-stories.png';
   a.href=canvas.toDataURL('image/png');
   a.click();
 }
-
-function roundRect(ctx,x,y,w,h,r){
-  ctx.beginPath();
-  ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);ctx.quadraticCurveTo(x+w,y,x+w,y+r);
-  ctx.lineTo(x+w,y+h-r);ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
-  ctx.lineTo(x+r,y+h);ctx.quadraticCurveTo(x,y+h,x,y+h-r);
-  ctx.lineTo(x,y+r);ctx.quadraticCurveTo(x,y,x+r,y);ctx.closePath();
-}
+function rRect(ctx,x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);ctx.quadraticCurveTo(x+w,y,x+w,y+r);ctx.lineTo(x+w,y+h-r);ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);ctx.lineTo(x+r,y+h);ctx.quadraticCurveTo(x,y+h,x,y+h-r);ctx.lineTo(x,y+r);ctx.quadraticCurveTo(x,y,x+r,y);ctx.closePath();}
 
 // ══════ COLEÇÃO ══════
 function cap(s){const m=['de','do','da','dos','das','e','em','a','o','para','com','por'];return s.toLowerCase().split(' ').map((w,i)=>(!i||!m.includes(w))?w[0].toUpperCase()+w.slice(1):w).join(' ');}
@@ -1092,7 +1122,6 @@ async function buscar(prim){
   const prompt=`PERFIL:
 Orçamento: ${budget||perfil.budget||'não informado'}
 Contextos: ${ct}${climaInfo}${idadeInfo}
-${extraCtx?'Extra: '+extraCtx:''}
 
 COLEÇÃO (${col.length} perfumes):
 ${col.map((p,i)=>`${i+1}. ${p.nome}${p.conc?' '+p.conc:''}${p.familia?' ['+p.familia+']':''}`).join('\n')}
@@ -1106,7 +1135,7 @@ Identifique 3 famílias com menos perfumes. Para cada uma, sugira 3 opções de 
 JSON PURO SEM MARKDOWN:
 {"diagnostico":"","analise_colecao":{"perfumes_por_familia":{"Fresco/Cítrico":0,"Aromático/Verde":0,"Doce/Gourmand":0,"Amadeirado":0,"Especiado/Oriental":0,"Aquático/Mineral":0,"Talco/Fougère":0,"Floral":0,"Frutado":0},"nao_classificados":["nome1"],"top3_faltando":["f1","f2","f3"]},"sugestoes_por_familia":[{"familia":"Nome","opcoes":[{"nome":"P","concentracao":"EDP","faixa_preco":"R$x-y","por_que":"j","quando_usar":"o"},{"nome":"P","concentracao":"EDT","faixa_preco":"R$x-y","por_que":"j","quando_usar":"o"},{"nome":"P","concentracao":"EDP","faixa_preco":"R$x-y","por_que":"j","quando_usar":"o"}]}]}`;
 
-  document.getElementById('lt2').textContent=prim?'Analisando sua coleção...':'Buscando novas sugestões...';
+  document.getElementById('ltt').textContent=prim?'Analisando sua coleção...':'Buscando novas sugestões...';
   document.getElementById('lo').classList.add('sh');
   try{
     const res=await fetch('https://operfumista-api.vercel.app/api/perfumista',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({diagnostico:prompt})});
@@ -1211,11 +1240,11 @@ function aplicar(){
   Object.values(classExtras).forEach(fam=>{upd[fam]=(upd[fam]||0)+1;});
   Object.entries(classExtras).forEach(([nome,fam])=>{
     const p=col.find(x=>x.nome===nome||nome.includes(x.nome)||x.nome.includes(nome));
-    if(p){p.familia=fam;}
+    if(p)p.familia=fam;
   });
   naoClass=naoClass.filter(({nome})=>!classExtras[nome]);
   famBase=upd;classExtras={};
-  renderG(upd);renderNC();renderCol();renderStats();renderConquistas();deb();
+  renderG(upd);renderNC();renderCol();renderStats();renderConquistas();renderRanking();deb();
   document.getElementById('ncbd').classList.remove('op');
   document.getElementById('nchv').classList.remove('op');
 }
@@ -1228,7 +1257,7 @@ async function salvarAnalise(data,s){
 
 // ══════ RESET ══════
 function resetar(){
-  budget='';ctxs=[];extraCtx='';novasN=0;jaSug=[];famBase={};naoClass=[];classExtras={};
+  budget='';ctxs=[];novasN=0;jaSug=[];famBase={};naoClass=[];classExtras={};
   document.querySelectorAll('.obt').forEach(o=>o.classList.remove('sl'));
   document.getElementById('ig').value='';document.getElementById('tt').value='';
   document.getElementById('lc').checked=false;document.getElementById('ban').disabled=true;
