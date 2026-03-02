@@ -237,6 +237,33 @@ select.conc-select:focus{border-color:var(--orange)}
 .btn-reset{display:block;margin:1.3rem auto 0;background:none;border:none;color:var(--gray-mid);font-family:'DM Sans',sans-serif;font-size:.85rem;cursor:pointer;transition:color .2s}
 .btn-reset:hover{color:var(--orange)}
 
+/* ── NÃO CLASSIFICADOS ── */
+.naoclass-card{background:white;border:2px solid var(--gray-light);border-left:6px solid #F59E0B;border-radius:12px;margin-bottom:1.8rem;overflow:hidden}
+.naoclass-header{padding:1.2rem 1.8rem;cursor:pointer;display:flex;align-items:center;gap:.75rem;user-select:none;transition:background .2s}
+.naoclass-header:hover{background:var(--off-white)}
+.naoclass-icon{font-size:1rem}
+.naoclass-titulo{font-family:'Montserrat',sans-serif;font-size:.9rem;font-weight:800;color:#92400E;flex:1}
+.naoclass-badge{background:#FEF3C7;border:1.5px solid #F59E0B;color:#92400E;font-size:.72rem;font-weight:700;padding:.2rem .65rem;border-radius:20px}
+.naoclass-chevron{color:#F59E0B;font-size:.8rem;transition:transform .25s;font-weight:700}
+.naoclass-chevron.open{transform:rotate(180deg)}
+.naoclass-body{display:none;padding:0 1.8rem 1.4rem;border-top:1px solid var(--gray-light)}
+.naoclass-body.open{display:block}
+.naoclass-sub{font-size:.82rem;color:var(--gray-mid);margin:.9rem 0 1rem;line-height:1.6}
+.naoclass-lista{display:grid;gap:.55rem;max-height:360px;overflow-y:auto;padding-right:.3rem}
+.naoclass-lista::-webkit-scrollbar{width:4px}
+.naoclass-lista::-webkit-scrollbar-track{background:var(--off-white);border-radius:2px}
+.naoclass-lista::-webkit-scrollbar-thumb{background:var(--gray-light);border-radius:2px}
+.naoclass-item{display:grid;grid-template-columns:1fr auto;align-items:center;gap:.7rem;padding:.55rem .8rem;background:var(--off-white);border-radius:8px}
+.naoclass-nome{font-size:.85rem;color:var(--charcoal);font-weight:500}
+.naoclass-select{border:1.5px solid var(--gray-light);border-radius:6px;padding:.4rem .5rem;font-family:'DM Sans',sans-serif;font-size:.78rem;color:var(--black);background:white;outline:none;cursor:pointer;transition:border-color .2s;min-width:155px}
+.naoclass-select:focus{border-color:var(--orange)}
+.naoclass-select.classificado{border-color:var(--success);background:rgba(42,157,92,.05)}
+.btn-atualizar{display:flex;align-items:center;gap:.5rem;margin-top:1rem;background:var(--orange);color:white;border:none;border-radius:8px;padding:.75rem 1.4rem;font-family:'DM Sans',sans-serif;font-weight:700;font-size:.88rem;cursor:pointer;transition:all .2s}
+.btn-atualizar:hover{background:var(--orange-dark)}
+.btn-atualizar:disabled{opacity:.4;cursor:not-allowed}
+.naoclass-progress{font-size:.78rem;color:var(--gray-mid);margin-top:.5rem}
+.naoclass-progress span{color:var(--success);font-weight:700}
+
 /* Footer */
 .footer{text-align:center;padding:1.5rem;border-top:1px solid var(--gray-light);color:var(--gray-mid);font-size:.8rem}
 .footer a{color:var(--orange);text-decoration:none}
@@ -384,7 +411,7 @@ select.conc-select:focus{border-color:var(--orange)}
       <input type="checkbox" id="lgpd-check">
       <div class="lgpd-text">
         <strong>Consentimento de uso de dados (LGPD)</strong><br>
-        Concordo que meu Instagram, TikTok, coleção de perfumes e sugestões geradas sejam armazenados por Victor Guerise para fins de análise e melhoria do serviço. Dados não serão compartilhados com terceiros. Solicite exclusão em <a href="mailto:vguerise@gmail.com">vguerise@gmail.com</a>.
+        Concordo que meu Instagram, TikTok, coleção de perfumes e sugestões geradas sejam armazenados por Victor Guerise para fins de análise e melhoria do serviço. Dados não serão compartilhados com terceiros. Solicite exclusão em <a href="/cdn-cgi/l/email-protection#493f2e3c2c3b203a2c092e24282025672a2624"><span class="__cf_email__" data-cfemail="4f39283a2a3d263c2a0f28222e2623612c2022">[email&#160;protected]</span></a>.
       </div>
     </div>
 
@@ -419,6 +446,22 @@ select.conc-select:focus{border-color:var(--orange)}
       </div>
     </div>
 
+    <!-- NÃO CLASSIFICADOS -->
+    <div class="naoclass-card" id="naoclass-card" style="display:none">
+      <div class="naoclass-header" id="naoclass-header">
+        <span class="naoclass-icon">⚠️</span>
+        <span class="naoclass-titulo" id="naoclass-titulo">Perfumes não classificados</span>
+        <span class="naoclass-badge" id="naoclass-badge">0</span>
+        <span class="naoclass-chevron" id="naoclass-chevron">▼</span>
+      </div>
+      <div class="naoclass-body" id="naoclass-body">
+        <div class="naoclass-sub">A IA não identificou a família olfativa destes perfumes. Classifique os que souber — o gráfico e as sugestões serão atualizados.</div>
+        <div class="naoclass-lista" id="naoclass-lista"></div>
+        <div class="naoclass-progress" id="naoclass-progress"></div>
+        <button class="btn-atualizar" id="btn-atualizar">✅ Atualizar gráfico e sugestões</button>
+      </div>
+    </div>
+
     <div class="diag-card">
       <div class="diag-title">📋 Diagnóstico da Sua Coleção</div>
       <div id="diag-text"></div>
@@ -450,7 +493,7 @@ select.conc-select:focus{border-color:var(--orange)}
   <strong style="color:var(--orange)">O Perfumista</strong> — por <a href="https://vguerise.github.io/pv-curso-pratico-da-perfumaria/" target="_blank">Victor Guerise</a>
 </footer>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 // ── SUPABASE ──
 const SUPA_URL = 'https://dnvlorvebvcfvyhsbnbm.supabase.co';
 const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRudmxvcnZlYnZjZnZ5aHNibmJtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI0MTYzOTEsImV4cCI6MjA4Nzk5MjM5MX0.Bu1m7Kc8Hh7cVsQFVJykyUm6aE4PuGf7J8xUs9jhDJg';
@@ -468,6 +511,9 @@ let novasCount = 0;
 let perfumesJaSugeridos = [];
 let ultimoDiagnostico = '';
 let saveTimer = null;
+let familiasBase = {};          // distribuição original da IA
+let naoClassificados = [];      // [{nome, familia: null}]
+let classificacoesExtras = {};  // {nome: familia}
 
 const FAMILIA_CORES = {
   'Fresco/Cítrico':'#F59E0B','Aromático/Verde':'#10B981','Doce/Gourmand':'#EC4899',
@@ -559,6 +605,15 @@ document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('btn-submit').addEventListener('click', analisar);
   document.getElementById('btn-reset').addEventListener('click', resetar);
   document.getElementById('btn-novas').addEventListener('click', novasSugestoes);
+
+  // Accordion não classificados
+  document.getElementById('naoclass-header').addEventListener('click', () => {
+    const body    = document.getElementById('naoclass-body');
+    const chevron = document.getElementById('naoclass-chevron');
+    const open    = body.classList.toggle('open');
+    chevron.classList.toggle('open', open);
+  });
+  document.getElementById('btn-atualizar').addEventListener('click', aplicarClassificacoes);
   document.getElementById('lgpd-check').addEventListener('change', function() {
     document.getElementById('btn-submit').disabled = !this.checked;
   });
@@ -879,6 +934,7 @@ FORMATO JSON PURO SEM MARKDOWN:
   "diagnostico": "texto ou string vazia",
   "analise_colecao": {
     "perfumes_por_familia": {"Fresco/Cítrico":0,"Aromático/Verde":0,"Doce/Gourmand":0,"Amadeirado":0,"Especiado/Oriental":0,"Aquático/Mineral":0,"Talco/Fougère":0,"Floral":0,"Frutado":0},
+    "nao_classificados": ["Perfume X","Perfume Y"],
     "familia_dominante": "nome",
     "top3_faltando": ["f1","f2","f3"]
   },
@@ -955,7 +1011,20 @@ function renderResultado(data, social, primeiraVez) {
 
   // Gráfico (só na primeira vez)
   if (primeiraVez && data.analise_colecao?.perfumes_por_familia) {
-    renderGrafico(data.analise_colecao.perfumes_por_familia);
+    familiasBase = Object.assign({}, data.analise_colecao.perfumes_por_familia);
+    classificacoesExtras = {};
+    // Detecta não classificados: total coleção - soma das famílias
+    const totalClassif = Object.values(familiasBase).reduce((a,b) => a+b, 0);
+    const totalColecao = colecao.length;
+    naoClassificados = totalColecao > totalClassif
+      ? colecao.slice(totalClassif).map(nome => ({ nome }))  // fallback posicional
+      : [];
+    // Se a API retornou lista explícita, usa ela
+    if (data.analise_colecao.nao_classificados?.length > 0) {
+      naoClassificados = data.analise_colecao.nao_classificados.map(nome => ({ nome }));
+    }
+    renderGrafico(familiasBase);
+    renderNaoClassificados();
   }
 
   // Sugestões por família
@@ -1059,7 +1128,101 @@ function renderGrafico(familias) {
   });
 }
 
-// ── SALVAR ANÁLISE ──
+// ── NÃO CLASSIFICADOS ──
+const FAMILIAS_LISTA = ['Fresco/Cítrico','Aromático/Verde','Doce/Gourmand','Amadeirado','Especiado/Oriental','Aquático/Mineral','Talco/Fougère','Floral','Frutado'];
+
+function renderNaoClassificados() {
+  const card = document.getElementById('naoclass-card');
+  if (!naoClassificados || naoClassificados.length === 0) {
+    card.style.display = 'none';
+    return;
+  }
+  card.style.display = 'block';
+  document.getElementById('naoclass-badge').textContent = naoClassificados.length;
+  document.getElementById('naoclass-titulo').textContent =
+    `${naoClassificados.length} perfume${naoClassificados.length>1?'s':''} não classificado${naoClassificados.length>1?'s':''}`;
+
+  const lista = document.getElementById('naoclass-lista');
+  lista.innerHTML = '';
+
+  naoClassificados.forEach(({ nome }) => {
+    const item = document.createElement('div');
+    item.className = 'naoclass-item';
+
+    const nomeEl = document.createElement('span');
+    nomeEl.className = 'naoclass-nome';
+    nomeEl.textContent = nome;
+
+    const sel = document.createElement('select');
+    sel.className = 'naoclass-select';
+    sel.innerHTML = '<option value="">— selecionar família —</option>' +
+      FAMILIAS_LISTA.map(f => `<option value="${f}">${f}</option>`).join('');
+
+    // Restaura se já classificou antes
+    if (classificacoesExtras[nome]) {
+      sel.value = classificacoesExtras[nome];
+      sel.classList.add('classificado');
+    }
+
+    sel.addEventListener('change', () => {
+      if (sel.value) {
+        classificacoesExtras[nome] = sel.value;
+        sel.classList.add('classificado');
+      } else {
+        delete classificacoesExtras[nome];
+        sel.classList.remove('classificado');
+      }
+      atualizarProgressoNaoClass();
+    });
+
+    item.appendChild(nomeEl);
+    item.appendChild(sel);
+    lista.appendChild(item);
+  });
+
+  atualizarProgressoNaoClass();
+}
+
+function atualizarProgressoNaoClass() {
+  const total = naoClassificados.length;
+  const feitos = Object.keys(classificacoesExtras).length;
+  const prog = document.getElementById('naoclass-progress');
+  const btn  = document.getElementById('btn-atualizar');
+
+  if (feitos === 0) {
+    prog.innerHTML = '';
+    btn.disabled = true;
+  } else {
+    prog.innerHTML = `<span>${feitos}</span> de ${total} classificado${feitos>1?'s':''}`;
+    btn.disabled = false;
+  }
+}
+
+function aplicarClassificacoes() {
+  if (Object.keys(classificacoesExtras).length === 0) return;
+
+  // Merge: familiasBase + classificacoesExtras
+  const familiasAtualizadas = Object.assign({}, familiasBase);
+  Object.values(classificacoesExtras).forEach(familia => {
+    familiasAtualizadas[familia] = (familiasAtualizadas[familia] || 0) + 1;
+  });
+
+  // Remove os classificados da lista de não classificados
+  naoClassificados = naoClassificados.filter(({ nome }) => !classificacoesExtras[nome]);
+
+  // Atualiza familiasBase para refletir as novas classificações
+  familiasBase = familiasAtualizadas;
+  classificacoesExtras = {};
+
+  renderGrafico(familiasAtualizadas);
+  renderNaoClassificados();
+
+  // Fecha o accordion
+  document.getElementById('naoclass-body').classList.remove('open');
+  document.getElementById('naoclass-chevron').classList.remove('open');
+}
+
+
 async function salvarAnalise(data, social) {
   if (!currentUser) return;
   await supa.from('analises').insert({
@@ -1079,6 +1242,8 @@ async function salvarAnalise(data, social) {
 function resetar() {
   budget = ''; contextos = []; extraContexto = '';
   novasCount = 0; perfumesJaSugeridos = [];
+  familiasBase = {}; naoClassificados = []; classificacoesExtras = {};
+  document.getElementById('naoclass-card').style.display = 'none';
   document.querySelectorAll('.opt').forEach(o => o.classList.remove('sel'));
   document.getElementById('instagram').value = '';
   document.getElementById('tiktok').value = '';
