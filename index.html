@@ -758,9 +758,9 @@ const SKEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI
 const DB=supabase.createClient(SURL,SKEY);
 
 // Banco antigo (Mapa da Coleção Perfeita)
-// Requer function RPC "exportar_colecao_por_email" criada lá
+// Acesso direto via REST — tabela user_collections com coluna user_email
 const MAPA_URL='https://frivahuiffxrxzcjrlom.supabase.co';
-const MAPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZyaXZhaHVpZmZ4cnh6Y2pybG9tIiwicm9sZSI6ImFub24iLCJpYXQiOjE2OTc0OTYwNzksImV4cCI6MjAxMzA3MjA3OX0.COLOQUE_AQUI_A_ANON_KEY_DO_BANCO_ANTIGO';
+const MAPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZyaXZhaHVpZmZ4cnh6Y2pybG9tIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc0NzgxMTAsImV4cCI6MjA4MzA1NDExMH0.9cIQs8qhctqZsiNlh4hOVHCjOBMR7UBFpBXiVST6iL4';
 
 // ── PWA ──
 (function(){
@@ -1089,7 +1089,12 @@ async function salvarPerfil(){
     if(perfilId){await DB.from('perfis').update(payload).eq('id',perfilId);}
     else{const{data}=await DB.from('perfis').insert(payload).select().single();if(data)perfilId=data.id;}
     const msg=document.getElementById('salvo');
-    msg.classList.add('sh');setTimeout(()=>msg.classList.remove('sh'),2500);
+    msg.classList.add('sh');
+    // Vai para a aba Coleção após salvar
+    setTimeout(()=>{
+      msg.classList.remove('sh');
+      goTab('colecao');
+    },1200);
   }catch(e){console.warn('Perfil:',e);}
 }
 
@@ -1243,38 +1248,66 @@ async function importarDoMapa(){
   st.textContent='⏳ Buscando sua coleção no Mapa...';st.className='imp-st ld';
   btn.disabled=true;
   try{
-    const res=await fetch(`${MAPA_URL}/rest/v1/rpc/exportar_colecao_por_email`,{
-      method:'POST',
-      headers:{'Content-Type':'application/json','apikey':MAPA_KEY,'Authorization':'Bearer '+MAPA_KEY},
-      body:JSON.stringify({p_email:email})
-    });
-    if(!res.ok)throw new Error('rpc_error');
+    // API REST direta — mesma lógica do supabase-sync.js do Mapa
+    // A tabela user_collections tem: user_email, collection (array JSON), profile, last_sync
+    const res=await fetch(
+      `${MAPA_URL}/rest/v1/user_collections?user_email=eq.${encodeURIComponent(email)}&select=collection,profile,last_sync&order=last_sync.desc&limit=1`,
+      {
+        method:'GET',
+        headers:{
+          'apikey':MAPA_KEY,
+          'Authorization':'Bearer '+MAPA_KEY,
+          'Content-Type':'application/json'
+        }
+      }
+    );
+    if(!res.ok){
+      const err=await res.text();
+      console.warn('[Import] HTTP',res.status,err);
+      throw new Error('http_'+res.status);
+    }
     const data=await res.json();
-    const lista=data?.perfumes||data;
-    if(!Array.isArray(lista)||!lista.length){
-      st.textContent='❌ Nenhuma coleção encontrada para este email.';
+    if(!data||!data.length){
+      st.textContent='❌ Nenhuma coleção encontrada para este email. Verifique se é o mesmo email usado no Mapa da Coleção Perfeita.';
       st.className='imp-st er';btn.disabled=false;return;
     }
+    const registro=data[0];
+    const lista=registro.collection||[];
+    if(!lista.length){
+      st.textContent='❌ Sua coleção no Mapa está vazia.';
+      st.className='imp-st er';btn.disabled=false;return;
+    }
+    // Importar perfumes — collection é array de {nome, concentracao}
     let importados=0;
     lista.forEach(p=>{
-      // Normaliza: o Mapa pode ter string pura ou objeto
       const nome=cap(typeof p==='string'?p:(p.nome||p.name||''));
+      const conc=typeof p==='string'?'':(p.concentracao||p.conc||'');
       if(nome&&!col.some(x=>x.nome===nome)){
-        col.push({nome,conc:p.concentracao||p.conc||'',familia:p.familia||null});
+        col.push({nome,conc,familia:p.familia||null});
         importados++;
       }
     });
     col.sort((a,b)=>a.nome.localeCompare(b.nome,'pt-BR'));
     renderCol();renderStats();renderNivel();deb();
     const jaExistiam=lista.length-importados;
-    st.textContent=`✅ ${importados} perfume${importados!==1?'s':''} importado${importados!==1?'s':''}!`+(jaExistiam>0?` (${jaExistiam} já existiam)`:'');
+    const ultimaSync=registro.last_sync?new Date(registro.last_sync).toLocaleDateString('pt-BR'):'';
+    st.innerHTML=`✅ ${importados} perfume${importados!==1?'s':''} importado${importados!==1?'s':''}!`
+      +(jaExistiam>0?` (${jaExistiam} já existiam no Perfumap)`:''  )
+      +(ultimaSync?` <span style="opacity:.7;font-size:.8em">— Mapa atualizado em ${ultimaSync}</span>`:'');
     st.className='imp-st ok';
     setTimeout(()=>{
       document.getElementById('imp-banner').classList.add('h');
       localStorage.setItem('pm_imp_ok','1');
-    },3000);
-  }catch(_){
-    st.innerHTML='⚠️ Função RPC não configurada ainda. <a href="mailto:vguerise@gmail.com" style="color:var(--or)">Solicitar migração manual →</a>';
+    },4000);
+  }catch(e){
+    console.warn('[Import] Erro:',e);
+    if(e.message==='http_401'||e.message==='http_403'){
+      st.textContent='❌ Erro de autenticação. Verifique a chave do Mapa.';
+    }else if(e.message==='http_404'){
+      st.textContent='❌ Tabela não encontrada no banco do Mapa.';
+    }else{
+      st.textContent='❌ Erro de conexão. Verifique sua internet e tente novamente.';
+    }
     st.className='imp-st er';
   }
   btn.disabled=false;
