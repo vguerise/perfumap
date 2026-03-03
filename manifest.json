@@ -2,7 +2,7 @@
   "name": "Perfumap",
   "short_name": "Perfumap",
   "description": "Mapeie sua coleção de perfumes com I.A.",
-  "start_url": "/perfumap/perfumap.html",
+  "start_url": "/perfumap/",
   "scope": "/perfumap/",
   "display": "standalone",
   "orientation": "portrait",
@@ -31,13 +31,5 @@
       "form_factor": "narrow"
     }
   ],
-  "categories": ["lifestyle", "utilities"],
-  "shortcuts": [
-    {
-      "name": "Minha Coleção",
-      "short_name": "Coleção",
-      "url": "/perfumap/perfumap.html",
-      "icons": [{ "src": "/perfumap/icon-192.png", "sizes": "192x192" }]
-    }
-  ]
+  "categories": ["lifestyle", "utilities"]
 }
