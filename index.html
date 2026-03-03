@@ -9,6 +9,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Perfumap">
   <link rel="manifest" id="pwa-manifest">
+  <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='80' fill='%23E85D04'/><text x='256' y='360' text-anchor='middle' font-size='300' font-family='serif'>🗺️</text></svg>">
+  <meta name="mobile-web-app-capable" content="yes">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -298,10 +300,36 @@ select.inp{cursor:pointer;appearance:none;background-image:url("data:image/svg+x
 .brst{display:block;margin:1rem auto 0;background:none;border:none;color:var(--tx3);font-family:'DM Sans',sans-serif;font-size:.79rem;cursor:pointer;transition:color .2s}
 .brst:hover{color:var(--or)}
 
-/* ══ BOTTOM NAV ══ */
+/* Coleção dropdown */
+.col-dropdown{position:relative;margin-bottom:.85rem}
+.col-toggle{display:flex;align-items:center;justify-content:space-between;background:var(--s1);border:1.5px solid var(--bd);border-radius:11px;padding:.9rem 1.1rem;cursor:pointer;transition:all .2s;user-select:none}
+.col-toggle:hover{border-color:rgba(232,93,4,.35)}
+.col-toggle.open{border-color:var(--or);border-bottom-left-radius:0;border-bottom-right-radius:0}
+.col-toggle-left{display:flex;align-items:center;gap:.65rem}
+.col-toggle-ic{font-size:1rem}
+.col-toggle-txt strong{font-size:.88rem;font-weight:700;color:var(--tx);display:block}
+.col-toggle-txt span{font-size:.72rem;color:var(--tx2)}
+.col-toggle-arr{font-size:.75rem;color:var(--tx3);transition:transform .25s}
+.col-toggle.open .col-toggle-arr{transform:rotate(180deg)}
+.col-dropdown-body{display:none;background:var(--s1);border:1.5px solid var(--or);border-top:none;border-bottom-left-radius:11px;border-bottom-right-radius:11px;overflow:hidden}
+.col-dropdown-body.open{display:block}
+.col-srch-wrap{padding:.65rem .85rem;border-bottom:1px solid var(--bd)}
+.col-srch-inp{width:100%;background:var(--s2);border:1px solid var(--bd);border-radius:8px;padding:.55rem .85rem .55rem 2rem;font-family:'DM Sans',sans-serif;font-size:.84rem;color:var(--tx);outline:none}
+.col-srch-inp:focus{border-color:var(--or)}.col-srch-inp::placeholder{color:var(--tx3)}
+.col-srch-ic{position:absolute;left:1.4rem;top:50%;transform:translateY(-50%);font-size:.75rem;color:var(--tx3);pointer-events:none}
+.col-srch-rel{position:relative}
+.plist{max-height:320px;overflow-y:auto;padding:.4rem .6rem .6rem}
+/* Badge CTA curso — largura total, maior */
+.hm-badge{display:flex;align-items:center;justify-content:space-between;gap:.65rem;padding:.85rem 1.1rem;border-radius:11px;font-size:.82rem;font-weight:700;margin-bottom:.85rem;width:100%}
+.hm-badge.ok{background:rgba(46,204,113,.1);border:1px solid rgba(46,204,113,.25);color:var(--ok)}
+.hm-badge.lock{background:linear-gradient(135deg,rgba(232,93,4,.15),rgba(232,93,4,.05));border:1.5px solid rgba(232,93,4,.4);color:var(--tx)}
+.hm-badge.lock .hm-cta{background:var(--or);color:#fff;border-radius:8px;padding:.45rem 1rem;font-size:.8rem;font-weight:700;text-decoration:none;white-space:nowrap;transition:background .2s}
+.hm-badge.lock .hm-cta:hover{background:var(--ord)}
+.hm-badge.lock .hm-left{display:flex;align-items:center;gap:.55rem}
+.hm-badge.ok .hm-left{display:flex;align-items:center;gap:.55rem}
 .bnav{display:none;position:fixed;bottom:0;left:0;right:0;height:calc(var(--bn) + var(--sb));background:var(--s1);border-top:1px solid var(--bd);z-index:100;padding-bottom:var(--sb)}
-.bnavi{display:flex;height:var(--bn)}
-.bni{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.2rem;cursor:pointer;border:none;background:none;padding:.32rem;transition:all .2s}
+.bnavi{display:grid;grid-template-columns:repeat(3,1fr);height:var(--bn);width:100%}
+.bni{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.2rem;cursor:pointer;border:none;background:none;padding:.32rem;transition:all .2s;width:100%}
 .bnic{font-size:1.2rem;transition:transform .2s}.bnil{font-family:'DM Sans',sans-serif;font-size:.6rem;font-weight:600;color:var(--tx3);transition:color .2s}
 .bni.ac .bnic{transform:scale(1.1)}.bni.ac .bnil{color:var(--or)}
 
@@ -428,10 +456,31 @@ select.inp{cursor:pointer;appearance:none;background-image:url("data:image/svg+x
                 </select>
               </div>
             </div>
-            <div style="display:flex;align-items:center">
-              <button class="bsalvar" id="bsalvar">💾 Salvar dados</button>
-              <span class="salvo" id="salvo">✓ Salvo!</span>
+          </div>
+
+          <div class="card">
+            <div class="clabel">💼 Contexto de Uso</div>
+            <p style="font-size:.8rem;color:var(--tx2);margin-bottom:.85rem">Quando você mais usa perfume? (selecione todos que se aplicam)</p>
+            <div class="og c2">
+              <div class="obt ctx" data-ctx="Trabalho / Dia a dia"><span class="oe">💼</span><span class="ov">Trabalho</span><span class="ol">Dia a dia</span></div>
+              <div class="obt ctx" data-ctx="Encontros / Social"><span class="oe">🍷</span><span class="ov">Encontros</span><span class="ol">Social</span></div>
+              <div class="obt ctx" data-ctx="Noite / Balada"><span class="oe">🌙</span><span class="ov">Noite</span><span class="ol">Balada</span></div>
+              <div class="obt ctx" data-ctx="Casual / Final de semana"><span class="oe">☀️</span><span class="ov">Casual</span><span class="ol">Fim de semana</span></div>
             </div>
+          </div>
+
+          <div class="card">
+            <div class="clabel">📱 Redes Sociais</div>
+            <p style="font-size:.8rem;color:var(--tx2);margin-bottom:.85rem">Opcional — para análises futuras personalizadas</p>
+            <div class="sgrid">
+              <div class="swrap"><span class="spfx">@</span><input class="inp" type="text" id="ig" placeholder="instagram"></div>
+              <div class="swrap"><span class="spfx">@</span><input class="inp" type="text" id="tt" placeholder="tiktok"></div>
+            </div>
+          </div>
+
+          <div style="display:flex;align-items:center">
+            <button class="bsalvar" id="bsalvar">💾 Salvar dados</button>
+            <span class="salvo" id="salvo">✓ Salvo!</span>
           </div>
         </div>
       </div>
@@ -453,10 +502,7 @@ select.inp{cursor:pointer;appearance:none;background-image:url("data:image/svg+x
               </select>
               <button class="bai" id="badd">+</button>
             </div>
-            <div class="sw2">
-              <span class="sico">🔍</span>
-              <input class="inp sr" type="text" id="srch" placeholder="Buscar...">
-            </div>
+            <!-- Busca movida para dentro do dropdown da coleção -->
           </div>
         </div>
         <div class="pg-body">
@@ -483,8 +529,8 @@ select.inp{cursor:pointer;appearance:none;background-image:url("data:image/svg+x
             </div>
           </div>
 
-          <!-- Badge acesso Hotmart -->
-          <div id="hm-wrap"></div>
+          <!-- Badge CTA Curso — largura total -->
+          <div id="hm-wrap" style="width:100%"></div>
 
           <div class="dz" id="dz">
             <input type="file" id="fi" accept=".pdf,.txt,.doc,.docx">
@@ -493,10 +539,31 @@ select.inp{cursor:pointer;appearance:none;background-image:url("data:image/svg+x
           </div>
           <div class="cst" id="cst"></div>
           <div class="cl2" id="cl2">☁️ —</div>
-          <div class="plist" id="plist">
-            <div class="es" id="es">
-              <div class="ei">🫙</div>
-              <p>Sua coleção está vazia.<br>Adicione o primeiro perfume acima.</p>
+          <!-- Lista dropdown da coleção -->
+          <div class="col-dropdown" id="col-dropdown">
+            <div class="col-toggle" id="col-toggle">
+              <div class="col-toggle-left">
+                <span class="col-toggle-ic">📦</span>
+                <div class="col-toggle-txt">
+                  <strong id="col-toggle-titulo">Minha Coleção</strong>
+                  <span id="col-toggle-sub">0 perfumes</span>
+                </div>
+              </div>
+              <span class="col-toggle-arr">▼</span>
+            </div>
+            <div class="col-dropdown-body" id="col-dropdown-body">
+              <div class="col-srch-wrap">
+                <div class="col-srch-rel">
+                  <span class="col-srch-ic">🔍</span>
+                  <input class="col-srch-inp" type="text" id="col-srch" placeholder="Buscar perfume...">
+                </div>
+              </div>
+              <div class="plist" id="plist">
+                <div class="es" id="es">
+                  <div class="ei">🫙</div>
+                  <p>Sua coleção está vazia.<br>Adicione o primeiro perfume acima.</p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -555,43 +622,17 @@ select.inp{cursor:pointer;appearance:none;background-image:url("data:image/svg+x
 
           <div style="height:1px;background:var(--bd);margin:1.5rem 0"></div>
 
-          <!-- Formulário análise -->
-          <div class="sblk">
-            <div class="slabel">Orçamento</div>
-            <div class="stitle">Quanto você quer gastar no próximo perfume?</div>
-            <div class="og c3" id="bg">
-              <div class="obt" data-b="até R$350"><span class="ov">até R$350</span><span class="ol">Entrada</span></div>
-              <div class="obt" data-b="R$350 a R$1.500"><span class="ov">R$350–1.500</span><span class="ol">Intermediário</span></div>
-              <div class="obt" data-b="acima de R$1.500"><span class="ov">R$1.500+</span><span class="ol">Nicho</span></div>
-            </div>
-          </div>
-          <div class="sblk">
-            <div class="slabel">Contexto de uso</div>
-            <div class="stitle">Quando você mais usa perfume?</div>
-            <div class="og c2">
-              <div class="obt ctx" data-ctx="Trabalho / Dia a dia"><span class="oe">💼</span><span class="ov">Trabalho</span><span class="ol">Dia a dia</span></div>
-              <div class="obt ctx" data-ctx="Encontros / Social"><span class="oe">🍷</span><span class="ov">Encontros</span><span class="ol">Social</span></div>
-              <div class="obt ctx" data-ctx="Noite / Balada"><span class="oe">🌙</span><span class="ov">Noite</span><span class="ol">Balada</span></div>
-              <div class="obt ctx" data-ctx="Casual / Final de semana"><span class="oe">☀️</span><span class="ov">Casual</span><span class="ol">Fim de semana</span></div>
-            </div>
-          </div>
-          <div class="sblk">
-            <div class="slabel">Redes sociais</div>
-            <div class="stitle">Opcional — para análises futuras</div>
-            <div class="sgrid">
-              <div class="swrap"><span class="spfx">@</span><input class="inp" type="text" id="ig" placeholder="instagram"></div>
-              <div class="swrap"><span class="spfx">@</span><input class="inp" type="text" id="tt" placeholder="tiktok"></div>
-            </div>
-          </div>
-          <div class="lgpd">
+          <!-- Botão analisar + resultado persistido -->
+          <div class="lgpd" id="lgpd-wrap">
             <input type="checkbox" id="lc">
             <div class="lgpdt">
               <strong style="color:var(--tx)">Consentimento LGPD</strong><br>
-              Concordo que minha coleção, redes sociais e sugestões sejam armazenados por Victor Guerise para melhoria do serviço. Solicite exclusão: <a href="mailto:vguerise@gmail.com">vguerise@gmail.com</a>
+              Concordo que minha coleção e sugestões sejam armazenados por Victor Guerise para melhoria do serviço. Solicite exclusão: <a href="mailto:vguerise@gmail.com">vguerise@gmail.com</a>
             </div>
           </div>
           <div class="emsg" id="emsg"></div>
           <button class="bpulse" id="ban" disabled>🔍 Analisar Coleção Agora</button>
+          <button class="bpulse" id="btn-refazer" style="display:none;margin-top:.75rem;background:var(--s2);color:var(--tx2);animation:none;border:1.5px solid var(--bd)" onclick="mostrarFormAnalise()">🔄 Refazer análise</button>
 
           <!-- Resultado -->
           <div class="rw" id="rw">
@@ -683,12 +724,76 @@ const MAPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJ
 
 // ── PWA ──
 (function(){
-  const mf={name:'Perfumap',short_name:'Perfumap',description:'Mapeie sua coleção de perfumes com I.A.',start_url:'./',display:'standalone',background_color:'#0E0E0E',theme_color:'#E85D04',icons:[{src:'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><rect width="512" height="512" rx="80" fill="%23E85D04"/><text x="256" y="340" text-anchor="middle" font-size="260">🗺️</text></svg>',sizes:'512x512',type:'image/svg+xml'}]};
-  document.getElementById('pwa-manifest').href=URL.createObjectURL(new Blob([JSON.stringify(mf)],{type:'application/manifest+json'}));
-  if('serviceWorker'in navigator){
-    const sw=`const C='pm-v1';self.addEventListener('install',e=>e.waitUntil(caches.open(C).then(c=>c.addAll(['./']))));self.addEventListener('fetch',e=>e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request))));`;
-    navigator.serviceWorker.register(URL.createObjectURL(new Blob([sw],{type:'application/javascript'}))).catch(()=>{});
+  // PWA Manifest — para funcionar como app instalável
+  // IMPORTANTE: para o Chrome/Android mostrar o banner "Instalar app", o site precisa
+  // estar em HTTPS com um manifest.json REAL servido pelo mesmo domínio.
+  // Um manifest em blob: URL funciona tecnicamente mas o Chrome bloqueia o install prompt.
+  // Solução: hospede o perfumap.html no GitHub Pages ou Vercel e coloque o manifest.json
+  // como arquivo separado no repositório. O código abaixo injeta inline para desenvolvimento.
+  const icons = [
+    {
+      src: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAAAABmJLR0QA/wD/AP+gvaeTAAAA2UlEQVR4nO3BMQEAAADCoPVP7WsIoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAeAMBuAABHgAAAABJRU5ErkJggg==',
+      sizes: '192x192', type: 'image/png', purpose: 'any maskable'
+    }
+  ];
+  const mf={
+    name:'Perfumap',
+    short_name:'Perfumap',
+    description:'Mapeie sua coleção de perfumes com I.A.',
+    start_url:'./',
+    display:'standalone',
+    orientation:'portrait',
+    background_color:'#0E0E0E',
+    theme_color:'#E85D04',
+    icons
+  };
+  const blob = new Blob([JSON.stringify(mf)],{type:'application/manifest+json'});
+  document.getElementById('pwa-manifest').href = URL.createObjectURL(blob);
+
+  // Service Worker — cache básico para uso offline
+  if('serviceWorker' in navigator){
+    const swCode = `
+      const CACHE = 'perfumap-v1';
+      const ASSETS = [self.location.pathname];
+      self.addEventListener('install', e => {
+        e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)));
+        self.skipWaiting();
+      });
+      self.addEventListener('activate', e => {
+        e.waitUntil(caches.keys().then(keys =>
+          Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))
+        ));
+        self.clients.claim();
+      });
+      self.addEventListener('fetch', e => {
+        if(e.request.method !== 'GET') return;
+        e.respondWith(
+          caches.match(e.request).then(r => r || fetch(e.request).then(res => {
+            const clone = res.clone();
+            caches.open(CACHE).then(c => c.put(e.request, clone));
+            return res;
+          }))
+        );
+      });
+    `;
+    navigator.serviceWorker
+      .register(URL.createObjectURL(new Blob([swCode],{type:'application/javascript'})))
+      .then(reg => console.log('SW registrado:', reg.scope))
+      .catch(e => console.warn('SW falhou (normal em file://):', e));
   }
+
+  // Install prompt — captura o evento para mostrar botão manual se necessário
+  window.addEventListener('beforeinstallprompt', e => {
+    e.preventDefault();
+    window._installPrompt = e;
+    // Mostra botão "Instalar app" se existir no DOM
+    const btn = document.getElementById('btn-install');
+    if(btn) btn.style.display = 'flex';
+  });
+  window.addEventListener('appinstalled', () => {
+    const btn = document.getElementById('btn-install');
+    if(btn) btn.style.display = 'none';
+  });
 })();
 
 // ── NÍVEIS ──
@@ -706,12 +811,13 @@ const FICONS={'Fresco/Cítrico':'🍋','Aromático/Verde':'🌿','Doce/Gourmand'
 const FCOR={'Fresco/Cítrico':'#F59E0B','Aromático/Verde':'#10B981','Doce/Gourmand':'#EC4899','Amadeirado':'#92400E','Especiado/Oriental':'#DC2626','Aquático/Mineral':'#3B82F6','Talco/Fougère':'#8B5CF6','Floral':'#F472B6','Frutado':'#EF4444'};
 
 // ── ESTADO ──
-let user=null,dbId=null,perfilId=null;
+let user=null,dbId=null,perfilId=null,analiseId=null;
 let col=[];
-let perfil={nome:'',cidade:'',clima:'',idade:'',budget:''};
+let perfil={nome:'',cidade:'',clima:'',idade:'',budget:'',ig:'',tt:'',ctxs:[]};
 let budget='',ctxs=[];
 let chart=null,famBase={},naoClass=[],classExtras={};
 let novasN=0,jaSug=[],saveT=null,srch='';
+let ultimaAnalise=null; // análise persistida
 
 // ── SANITIZAÇÃO XSS ──
 // Todos os dados externos (API, input do usuário) passam aqui antes de ir ao innerHTML
@@ -761,7 +867,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   // Coleção
   document.getElementById('badd').addEventListener('click',addP);
   document.getElementById('pi').addEventListener('keypress',e=>{if(e.key==='Enter'){e.preventDefault();addP();}});
-  document.getElementById('srch').addEventListener('input',function(){srch=this.value.toLowerCase();renderCol();});
+  // Busca integrada ao dropdown (col-srch)
 
   // Upload
   const dz=document.getElementById('dz'),fi=document.getElementById('fi');
@@ -781,16 +887,13 @@ document.addEventListener('DOMContentLoaded',()=>{
   document.getElementById('bimp-run').addEventListener('click',importarDoMapa);
   document.getElementById('imp-email').addEventListener('keypress',e=>{if(e.key==='Enter')importarDoMapa();});
 
-  // Análise
-  document.querySelectorAll('#bg .obt').forEach(el=>el.addEventListener('click',()=>{
-    document.querySelectorAll('#bg .obt').forEach(o=>o.classList.remove('sl'));
-    el.classList.add('sl');budget=el.dataset.b;
-  }));
+  // Contexto de uso (agora na aba dados)
   document.querySelectorAll('.ctx').forEach(el=>el.addEventListener('click',()=>{
     el.classList.toggle('sl');
     const v=el.dataset.ctx;
     ctxs=el.classList.contains('sl')?[...ctxs,v]:ctxs.filter(c=>c!==v);
   }));
+  // Análise
   document.getElementById('lc').addEventListener('change',function(){document.getElementById('ban').disabled=!this.checked;});
   document.getElementById('ban').addEventListener('click',analisar);
   document.getElementById('brst').addEventListener('click',resetar);
@@ -801,6 +904,14 @@ document.addEventListener('DOMContentLoaded',()=>{
   });
   document.getElementById('batu').addEventListener('click',aplicar);
   document.getElementById('bshare').addEventListener('click',gerarStories);
+  // Dropdown coleção
+  document.getElementById('col-toggle').addEventListener('click',()=>{
+    document.getElementById('col-toggle').classList.toggle('open');
+    document.getElementById('col-dropdown-body').classList.toggle('open');
+  });
+  document.getElementById('col-srch').addEventListener('input',function(){
+    srch=this.value.toLowerCase();renderCol();
+  });
 });
 
 // ══════ AUTH ══════
@@ -847,6 +958,7 @@ async function iniciar(){
   renderConquistas();
   renderRanking();
   verificarHotmart();
+  await carregarAnalise(); // Restaura análise anterior automaticamente
 }
 function mostrarAuth(){
   document.getElementById('ao').style.display='flex';
@@ -883,13 +995,20 @@ async function carregarPerfil(){
   try{
     const{data}=await DB.from('perfis').select('*').eq('user_id',user.id).single();
     if(data){
-      perfil={nome:data.nome||'',cidade:data.cidade||'',clima:data.clima||'',idade:data.idade||'',budget:data.budget||''};
+      perfil={nome:data.nome||'',cidade:data.cidade||'',clima:data.clima||'',
+        idade:data.idade||'',budget:data.budget||'',ig:data.ig||'',tt:data.tt||'',
+        ctxs:data.ctxs?JSON.parse(data.ctxs):[]};
       perfilId=data.id;
       document.getElementById('pf-nome').value=perfil.nome;
       document.getElementById('pf-cidade').value=perfil.cidade;
       document.getElementById('pf-clima').value=perfil.clima;
       document.getElementById('pf-idade').value=perfil.idade;
       document.getElementById('pf-budget').value=perfil.budget;
+      document.getElementById('ig').value=perfil.ig;
+      document.getElementById('tt').value=perfil.tt;
+      ctxs=perfil.ctxs||[];
+      ctxs.forEach(v=>{const el=document.querySelector('.ctx[data-ctx="'+v+'"]');if(el)el.classList.add('sl');});
+      budget=perfil.budget||'';
     }
   }catch(_){}
   document.getElementById('nv-nome').textContent=perfil.nome||user.email.split('@')[0];
@@ -912,9 +1031,16 @@ async function salvarPerfil(){
   perfil.clima=document.getElementById('pf-clima').value;
   perfil.idade=document.getElementById('pf-idade').value;
   perfil.budget=document.getElementById('pf-budget').value;
+  perfil.ig=document.getElementById('ig').value.trim();
+  perfil.tt=document.getElementById('tt').value.trim();
+  perfil.ctxs=ctxs;
+  // Atualiza orçamento na análise se estiver selecionado
+  budget=perfil.budget||budget;
   document.getElementById('nv-nome').textContent=perfil.nome||user.email.split('@')[0];
   try{
-    const payload={user_id:user.id,...perfil,updated_at:new Date().toISOString()};
+    const payload={user_id:user.id,nome:perfil.nome,cidade:perfil.cidade,clima:perfil.clima,
+      idade:perfil.idade,budget:perfil.budget,ig:perfil.ig,tt:perfil.tt,
+      ctxs:JSON.stringify(ctxs),updated_at:new Date().toISOString()};
     if(perfilId){await DB.from('perfis').update(payload).eq('id',perfilId);}
     else{const{data}=await DB.from('perfis').insert(payload).select().single();if(data)perfilId=data.id;}
     const msg=document.getElementById('salvo');
@@ -961,12 +1087,11 @@ async function verificarHotmart(){
       .eq('status','ativo')
       .maybeSingle();
     if(data){
-      wrap.innerHTML=`<div class="hm-badge">✅ Acesso ao Curso ativo — bem-vindo, ${esc(data.nome||'Aluno')}!</div>`;
-      // Esconde banner de upsell para quem já comprou
+      wrap.innerHTML=`<div class="hm-badge ok"><div class="hm-left">✅ <span>Acesso ao Curso ativo — ${esc(data.nome||'Aluno')}</span></div></div>`;
       const upsell=document.querySelector('.upsell');
       if(upsell)upsell.style.display='none';
     }else{
-      wrap.innerHTML=`<div class="hm-badge lock">🔒 Sem acesso ao Curso <a href="https://pay.hotmart.com/X104571170T?checkoutMode=10" target="_blank">→ Adquirir</a></div>`;
+      wrap.innerHTML=`<div class="hm-badge lock"><div class="hm-left">🔒 <span style="color:var(--tx2);font-weight:600">Sem acesso ao Curso Prático</span></div><a class="hm-cta" href="https://pay.hotmart.com/X104571170T?checkoutMode=10" target="_blank">Adquirir →</a></div>`;
     }
   }catch(_){wrap.innerHTML='';}
 }
@@ -1206,10 +1331,14 @@ function renderStats(){
   if(!col.length)return;
   const cf=col.filter(p=>p.familia).length;
   const fams=[...new Set(col.filter(p=>p.familia).map(p=>p.familia))];
-  // stats são números internos — sem risco XSS
   el.innerHTML=`<span class="spc"><span>${col.length}</span> perfume${col.length>1?'s':''}</span>`
     +(fams.length?`<span class="spc"><span>${fams.length}</span> famíl${fams.length>1?'ias':'ia'}</span>`:'')
     +(col.length-cf>0?`<span class="spc"><span>${col.length-cf}</span> sem família</span>`:'');
+  // Atualiza toggle dropdown
+  const tit=document.getElementById('col-toggle-titulo');
+  const sub=document.getElementById('col-toggle-sub');
+  if(tit)tit.textContent='Minha Coleção';
+  if(sub)sub.textContent=col.length+' perfume'+(col.length!==1?'s':'');
 }
 
 // ══════ UPLOAD ══════
@@ -1300,25 +1429,16 @@ function renderR(data,social,prim){
   }
   const sugs=data.sugestoes_por_familia||[];
   sugs.forEach(b=>b.opcoes?.forEach(op=>{if(!jaSug.includes(op.nome))jaSug.push(op.nome);}));
-  const cont=document.getElementById('sct');cont.innerHTML='';
-  sugs.forEach((bloco,bi)=>{
-    const d=document.createElement('div');d.className='fblk';
-    // esc() em dados vindos da API
-    d.innerHTML=`<div class="fblkh"><span class="fpill">Lacuna</span>${esc(bloco.familia)}<span class="fhint">escolha 1</span></div><div class="opcg" id="og${bi}"></div>`;
-    cont.appendChild(d);
-    const g=d.querySelector('#og'+bi);
-    (bloco.opcoes||[]).forEach((op,oi)=>{
-      const c=document.createElement('div');c.className='oc';
-      c.innerHTML=`<div class="ocnum">${oi+1}</div><div><div class="ocnm">${esc(op.nome)} <span class="occ">${esc(op.concentracao||'')}</span></div><div class="ocm">${esc(op.por_que)}</div><div class="octg">${op.quando_usar?`<span>${esc(op.quando_usar)}</span>`:''} ${op.faixa_preco?`<span>${esc(op.faixa_preco)}</span>`:''}</div></div><div class="ocr"></div>`;
-      c.addEventListener('click',()=>{g.querySelectorAll('.oc').forEach(x=>x.classList.remove('sl2'));c.classList.add('sl2');});
-      g.appendChild(c);
-    });
-  });
+  renderSugestoes(sugs);
   const rest=3-novasN;
   document.getElementById('bnov').disabled=novasN>=3;
   document.getElementById('nit').textContent=novasN>=3?'Limite atingido.':`Mais ${rest} vez${rest>1?'es':''} disponíveis.`;
-  salvarAnalise(data,social).catch(()=>{});
+  salvarAnalise(data,{ig:perfil.ig,tk:perfil.tt}).catch(()=>{});
   document.getElementById('rw').classList.add('sh');
+  // Oculta form de análise, mostra botão "Refazer"
+  document.getElementById('lgpd-wrap').style.display='none';
+  document.getElementById('ban').style.display='none';
+  document.getElementById('btn-refazer').style.display='block';
   document.querySelector('.tc')?.scrollTo({top:9999,behavior:'smooth'});
 }
 
@@ -1384,18 +1504,125 @@ function aplicar(){
   document.getElementById('nchv').classList.remove('op');
 }
 
-// ══════ SALVAR ANÁLISE ══════
+// ══════ SALVAR E CARREGAR ANÁLISE PERSISTIDA ══════
 async function salvarAnalise(data,s){
   if(!user)return;
-  await DB.from('analises').insert({user_id:user.id,instagram:s.ig||null,tiktok:s.tk||null,colecao:col,orcamento:budget,contextos:ctxs,sugestoes:data.sugestoes_por_familia||[],diagnostico:data.diagnostico||''}).catch(()=>{});
+  // Salva sempre a análise mais recente (upsert por user_id)
+  const payload={
+    user_id:user.id,
+    instagram:s.ig||perfil.ig||null,
+    tiktok:s.tk||perfil.tt||null,
+    colecao:col,
+    orcamento:budget||perfil.budget,
+    contextos:ctxs,
+    sugestoes:data.sugestoes_por_familia||[],
+    diagnostico:data.diagnostico||'',
+    fam_base:famBase,
+    nao_class:naoClass,
+    novas_n:novasN,
+    ja_sug:jaSug,
+    updated_at:new Date().toISOString()
+  };
+  try{
+    if(analiseId){
+      await DB.from('analises').update(payload).eq('id',analiseId);
+    }else{
+      const{data:ins}=await DB.from('analises').insert(payload).select('id').single();
+      if(ins)analiseId=ins.id;
+    }
+  }catch(_){}
+}
+
+async function carregarAnalise(){
+  if(!user)return;
+  try{
+    // Busca a análise mais recente do usuário
+    const{data}=await DB.from('analises')
+      .select('*')
+      .eq('user_id',user.id)
+      .order('updated_at',{ascending:false})
+      .limit(1)
+      .maybeSingle();
+    if(!data)return;
+    analiseId=data.id;
+    // Restaura estado
+    budget=data.orcamento||'';
+    ctxs=data.contextos||[];
+    famBase=data.fam_base||{};
+    naoClass=data.nao_class||[];
+    novasN=data.novas_n||0;
+    jaSug=data.ja_sug||[];
+    // Restaura seleção do orçamento visualmente
+    if(budget){
+      const btn=document.querySelector('[data-b="'+budget+'"]');
+      if(btn){document.querySelectorAll('#bg .obt').forEach(o=>o.classList.remove('sl'));btn.classList.add('sl');}
+    }
+    // Reconstrói o resultado na tela
+    if(data.diagnostico){
+      document.getElementById('rsub').textContent=(data.colecao||[]).length+' perfumes analisados';
+      const frases=data.diagnostico.split(/(?<=[.!?])\s+/).map(f=>f.trim()).filter(f=>f.length>4);
+      const el=document.getElementById('dct');el.innerHTML='';
+      if(frases.length>1){
+        const ul=document.createElement('ul');ul.className='dblist';
+        frases.forEach(f=>{const li=document.createElement('li');li.className='dbli';li.textContent=f;ul.appendChild(li);});
+        el.appendChild(ul);
+      }else{el.textContent=data.diagnostico;}
+    }
+    if(data.fam_base&&Object.values(data.fam_base).some(v=>v>0))renderG(data.fam_base);
+    if(data.nao_class&&data.nao_class.length)renderNC();
+    if(data.sugestoes&&data.sugestoes.length){
+      renderSugestoes(data.sugestoes);
+    }
+    // Mostra resultado
+    if(data.diagnostico||data.sugestoes?.length){
+      document.getElementById('rw').classList.add('sh');
+      // Oculta o botão de analisar e o LGPD — resultado já existe
+      document.getElementById('lgpd-wrap').style.display='none';
+      document.getElementById('ban').style.display='none';
+      document.getElementById('btn-refazer').style.display='block';
+    }
+    const rest=3-(data.novas_n||0);
+    document.getElementById('bnov').disabled=(data.novas_n||0)>=3;
+    document.getElementById('nit').textContent=(data.novas_n||0)>=3?'Limite atingido.':`Mais ${rest} vez${rest>1?'es':''} disponíveis.`;
+  }catch(_){}
+}
+
+function renderSugestoes(sugs){
+  const cont=document.getElementById('sct');cont.innerHTML='';
+  sugs.forEach((bloco,bi)=>{
+    const d=document.createElement('div');d.className='fblk';
+    d.innerHTML=`<div class="fblkh"><span class="fpill">Lacuna</span>${esc(bloco.familia)}<span class="fhint">escolha 1</span></div><div class="opcg" id="og${bi}"></div>`;
+    cont.appendChild(d);
+    const g=d.querySelector('#og'+bi);
+    (bloco.opcoes||[]).forEach((op,oi)=>{
+      const c=document.createElement('div');c.className='oc';
+      c.innerHTML=`<div class="ocnum">${oi+1}</div><div><div class="ocnm">${esc(op.nome)} <span class="occ">${esc(op.concentracao||'')}</span></div><div class="ocm">${esc(op.por_que)}</div><div class="octg">${op.quando_usar?`<span>${esc(op.quando_usar)}</span>`:''} ${op.faixa_preco?`<span>${esc(op.faixa_preco)}</span>`:''}</div></div><div class="ocr"></div>`;
+      c.addEventListener('click',()=>{g.querySelectorAll('.oc').forEach(x=>x.classList.remove('sl2'));c.classList.add('sl2');});
+      g.appendChild(c);
+    });
+  });
+}
+
+// ══════ MOSTRAR FORM ANÁLISE (refazer) ══════
+function mostrarFormAnalise(){
+  document.getElementById('lgpd-wrap').style.display='';
+  document.getElementById('lc').checked=false;
+  document.getElementById('ban').disabled=true;
+  document.getElementById('ban').style.display='';
+  document.getElementById('btn-refazer').style.display='none';
+  document.getElementById('rw').classList.remove('sh');
+  document.querySelector('.tc')?.scrollTo({top:0,behavior:'smooth'});
 }
 
 // ══════ RESET ══════
 function resetar(){
-  budget='';ctxs=[];novasN=0;jaSug=[];famBase={};naoClass=[];classExtras={};
+  budget='';ctxs=[];novasN=0;jaSug=[];famBase={};naoClass=[];classExtras={};analiseId=null;
   document.querySelectorAll('.obt').forEach(o=>o.classList.remove('sl'));
-  document.getElementById('ig').value='';document.getElementById('tt').value='';
+  document.querySelectorAll('.ctx').forEach(o=>o.classList.remove('sl'));
   document.getElementById('lc').checked=false;document.getElementById('ban').disabled=true;
+  document.getElementById('ban').style.display='';
+  document.getElementById('btn-refazer').style.display='none';
+  document.getElementById('lgpd-wrap').style.display='';
   document.getElementById('cc').classList.add('h');
   if(chart){chart.destroy();chart=null;}
   document.getElementById('clg').innerHTML='';
@@ -1403,6 +1630,8 @@ function resetar(){
   document.getElementById('sct').innerHTML='';document.getElementById('dct').innerHTML='';
   document.getElementById('rw').classList.remove('sh');document.getElementById('emsg').classList.remove('sh');
   document.querySelector('.tc')?.scrollTo({top:0,behavior:'smooth'});
+  // Apaga análise do banco para forçar nova análise
+  if(user&&analiseId){DB.from('analises').delete().eq('id',analiseId).catch(()=>{});}
 }
 </script>
 </body>
