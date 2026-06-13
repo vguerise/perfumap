@@ -1701,7 +1701,7 @@ async function pdfTxt(f){
 }
 
 // ══════ ANÁLISE ══════
-async function analisar(){
+async async function analisar(){
   const em=document.getElementById('emsg');
   if(!col.length){em.textContent='⚠️ Adicione pelo menos 1 perfume à coleção.';em.classList.add('sh');return;}
   em.classList.remove('sh');
@@ -2058,13 +2058,16 @@ function renderDesejos(){
     item.appendChild(num);
     item.appendChild(nome);
 
+    const badge = document.createElement('span');
     if(d.prioridade){
-      const badge = document.createElement('span');
       badge.className = 'witem-badge ' + d.prioridade;
-      badge.textContent = d.prioridade === 'top' ? '🔥 Prioridade alta'
+      badge.textContent = d.prioridade === 'top' ? '🔥 Alta'
         : d.prioridade === 'medio' ? '⭐ Médio' : '💤 Baixo';
-      item.appendChild(badge);
+    } else {
+      badge.className = 'witem-badge baixo';
+      badge.textContent = '• A priorizar';
     }
+    item.appendChild(badge);
 
     item.appendChild(rm);
     list.appendChild(item);
