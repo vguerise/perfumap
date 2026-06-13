@@ -1824,6 +1824,7 @@ function aplicar(){
   renderG(upd);renderNC();renderCol();renderStats();renderRanking();deb();
   document.getElementById('ncbd').classList.remove('op');
   document.getElementById('nchv').classList.remove('op');
+  try{const raw=localStorage.getItem(lsKey());if(raw){const snap=JSON.parse(raw);snap.famBase=famBase;snap.naoClass=naoClass;snap.colecao=col;snap.ts=Date.now();localStorage.setItem(lsKey(),JSON.stringify(snap));}}catch(_){}
 }
 
 // ══════ SALVAR E CARREGAR ANÁLISE PERSISTIDA ══════
