@@ -557,6 +557,16 @@ select.inp{cursor:pointer;appearance:none;background-image:url("data:image/svg+x
           </div>
 
           <div class="card">
+            <div class="clabel">🧴 Categoria de Perfumes</div>
+            <p style="font-size:.8rem;color:var(--tx2);margin-bottom:.85rem">Suas análises e sugestões da I.A. serão baseadas nesta categoria</p>
+            <div class="og c3">
+              <div class="obt cat sl" data-cat="masculino"><span class="oe">👔</span><span class="ov">Masculinos</span></div>
+              <div class="obt cat" data-cat="feminino"><span class="oe">🌸</span><span class="ov">Femininos</span></div>
+              <div class="obt cat" data-cat="compartilhavel"><span class="oe">🤝</span><span class="ov">Compartilháveis</span></div>
+            </div>
+          </div>
+
+          <div class="card">
             <div class="clabel">💼 Contexto de Uso</div>
             <p style="font-size:.8rem;color:var(--tx2);margin-bottom:.85rem">Quando você mais usa perfume? (selecione todos que se aplicam)</p>
             <div class="og c2">
@@ -1000,7 +1010,7 @@ const FCOR={'Fresco/Cítrico':'#F59E0B','Aromático/Verde':'#10B981','Doce/Gourm
 // ── ESTADO ──
 let user=null,dbId=null,perfilId=null;
 let col=[];
-let perfil={nome:'',cidade:'',clima:'',idade:'',budget:'',ig:'',tt:'',ctxs:[]};
+let perfil={nome:'',cidade:'',clima:'',idade:'',budget:'',ig:'',tt:'',ctxs:[],categoria:'masculino'};
 let budget='',ctxs=[];
 let chart=null,famBase={},naoClass=[],classExtras={};
 let novasN=0,jaSug=[],saveT=null,srch='';
@@ -1070,6 +1080,13 @@ document.addEventListener('DOMContentLoaded',()=>{
     el.classList.toggle('sl');
     const v=el.dataset.ctx;
     ctxs=el.classList.contains('sl')?[...ctxs,v]:ctxs.filter(c=>c!==v);
+  }));
+
+  // Categoria de perfumes (seleção única: masculino/feminino/compartilhavel)
+  document.querySelectorAll('.cat').forEach(el=>el.addEventListener('click',()=>{
+    document.querySelectorAll('.cat').forEach(o=>o.classList.remove('sl'));
+    el.classList.add('sl');
+    perfil.categoria=el.dataset.cat;
   }));
   // Análise
 
@@ -1245,6 +1262,8 @@ async function carregarPerfil(){
       ctxs=p.ctxs||[];
       ctxs.forEach(v=>{const el=document.querySelector('.ctx[data-ctx="'+v+'"]');if(el)el.classList.add('sl');});
       budget=p.budget||'';
+      perfil.categoria=p.categoria||'masculino';
+      document.querySelectorAll('.cat').forEach(o=>o.classList.toggle('sl',o.dataset.cat===perfil.categoria));
     }
   }catch(_){}
   // 2. Busca Supabase em background (fonte da verdade)
@@ -1253,7 +1272,7 @@ async function carregarPerfil(){
     if(data){
       perfil={nome:data.nome||'',cidade:data.cidade||'',clima:data.clima||'',
         idade:data.idade||'',budget:data.budget||'',
-        ctxs:data.ctxs?JSON.parse(data.ctxs):[],_id:data.id};
+        ctxs:data.ctxs?JSON.parse(data.ctxs):[],categoria:data.categoria||'masculino',_id:data.id};
       perfilId=data.id;
       document.getElementById('pf-nome').value=perfil.nome;
       document.getElementById('pf-cidade').value=perfil.cidade;
@@ -1263,6 +1282,7 @@ async function carregarPerfil(){
       ctxs=perfil.ctxs||[];
       ctxs.forEach(v=>{const el=document.querySelector('.ctx[data-ctx="'+v+'"]');if(el)el.classList.add('sl');});
       budget=perfil.budget||'';
+      document.querySelectorAll('.cat').forEach(o=>o.classList.toggle('sl',o.dataset.cat===perfil.categoria));
       // Atualiza localStorage com dados da nuvem
       try{localStorage.setItem(lsPerfilKey,JSON.stringify(perfil));}catch(_){}
     }
@@ -1291,11 +1311,12 @@ async function salvarPerfil(){
   perfil.idade=document.getElementById('pf-idade').value;
   perfil.budget=document.getElementById('pf-budget').value;
   perfil.ctxs=ctxs;
+  perfil.categoria=document.querySelector('.cat.sl')?.dataset.cat||perfil.categoria||'masculino';
   budget=perfil.budget||budget;
   document.getElementById('nv-nome').textContent=perfil.nome||'Colecionador';
   try{
     const payload={user_id:user.id,nome:perfil.nome,cidade:perfil.cidade,clima:perfil.clima,
-      idade:perfil.idade,budget:perfil.budget,ctxs:JSON.stringify(ctxs),
+      idade:perfil.idade,budget:perfil.budget,ctxs:JSON.stringify(ctxs),categoria:perfil.categoria,
       updated_at:new Date().toISOString()};
     if(perfilId){await DB.from('perfis').update(payload).eq('id',perfilId);}
     else{const{data}=await DB.from('perfis').insert(payload).select().single();if(data)perfilId=data.id;}
@@ -1701,7 +1722,7 @@ async function pdfTxt(f){
 }
 
 // ══════ ANÁLISE ══════
-async async async function analisar(){
+async function analisar(){
   const em=document.getElementById('emsg');
   if(!col.length){em.textContent='⚠️ Adicione pelo menos 1 perfume à coleção.';em.classList.add('sh');return;}
   em.classList.remove('sh');
@@ -1717,11 +1738,13 @@ async function buscar(prim){
   const nr=jaSug.length>0?'\nNÃO REPITA: '+jaSug.join(', '):'';
   const climaInfo=perfil.clima?'\nClima: '+perfil.clima:'';
   const idadeInfo=perfil.idade?'\nFaixa etária: '+perfil.idade:'';
-  const prompt=`PERFIL:\nOrçamento: ${budget||perfil.budget||'não informado'}\nContextos: ${ct}${climaInfo}${idadeInfo}\n\nCOLEÇÃO (${col.length} perfumes):\n${col.map((p,i)=>`${i+1}. ${p.nome}${p.conc?' '+p.conc:''}${p.familia?' ['+p.familia+']':''}`).join('\n')}\n\nREGRAS: perfumes disponíveis no Brasil 2025, NUNCA descontinuados, respeite orçamento, NUNCA sugira da coleção existente.${nr}\n\n${prim?'DIAGNÓSTICO: 3-4 frases sobre famílias dominantes, estilo e gaps.':'DIAGNÓSTICO: string vazia.'}\n\nIdentifique 3 famílias com menos perfumes. Para cada uma, sugira 3 opções de marcas diferentes.\n\nJSON PURO SEM MARKDOWN:\n{"diagnostico":"","analise_colecao":{"perfumes_por_familia":{"Fresco/Cítrico":0,"Aromático/Verde":0,"Doce/Gourmand":0,"Amadeirado":0,"Especiado/Oriental":0,"Aquático/Mineral":0,"Talco/Fougère":0,"Floral":0,"Frutado":0},"nao_classificados":["nome1"],"top3_faltando":["f1","f2","f3"]},"sugestoes_por_familia":[{"familia":"Nome","opcoes":[{"nome":"P","concentracao":"EDP","faixa_preco":"R$x-y","por_que":"j","quando_usar":"o"}]}]}`;
+  const categoria=perfil.categoria||'masculino';
+  const categoriaLabel=categoria==='feminino'?'Femininos':categoria==='compartilhavel'?'Compartilháveis (unissex)':'Masculinos';
+  const prompt=`PERFIL:\nCategoria de perfumes: ${categoriaLabel}\nOrçamento: ${budget||perfil.budget||'não informado'}\nContextos: ${ct}${climaInfo}${idadeInfo}\n\nCOLEÇÃO (${col.length} perfumes):\n${col.map((p,i)=>`${i+1}. ${p.nome}${p.conc?' '+p.conc:''}${p.familia?' ['+p.familia+']':''}`).join('\n')}\n\nREGRAS: perfumes disponíveis no Brasil 2025, NUNCA descontinuados, respeite orçamento, NUNCA sugira da coleção existente.${nr}\n\n${prim?'DIAGNÓSTICO: 3-4 frases sobre famílias dominantes, estilo e gaps.':'DIAGNÓSTICO: string vazia.'}\n\nIdentifique 3 famílias com menos perfumes. Para cada uma, sugira 3 opções de marcas diferentes.\n\nJSON PURO SEM MARKDOWN:\n{"diagnostico":"","analise_colecao":{"perfumes_por_familia":{"Fresco/Cítrico":0,"Aromático/Verde":0,"Doce/Gourmand":0,"Amadeirado":0,"Especiado/Oriental":0,"Aquático/Mineral":0,"Talco/Fougère":0,"Floral":0,"Frutado":0},"nao_classificados":["nome1"],"top3_faltando":["f1","f2","f3"]},"sugestoes_por_familia":[{"familia":"Nome","opcoes":[{"nome":"P","concentracao":"EDP","faixa_preco":"R$x-y","por_que":"j","quando_usar":"o"}]}]}`;
   document.getElementById('ltt').textContent=prim?'Analisando sua coleção...':'Buscando novas sugestões...';
   document.getElementById('lo').classList.add('sh');
   try{
-    const res=await fetch('https://operfumista-api.vercel.app/api/perfumista',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({diagnostico:prompt})});
+    const res=await fetch('https://operfumista-api.vercel.app/api/perfumista',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({diagnostico:prompt,categoria})});
     if(!res.ok)throw new Error('HTTP '+res.status);
     renderR(await res.json(),{ig,tk},prim);
   }catch(e){
@@ -2134,7 +2157,8 @@ function chatContexto(){
   const semFamilia = col.filter(p=>!p.familia).length;
   const listaNomes = col.map(p=>`${p.nome}${p.marca?' ('+p.marca+')':''}`).join(', ');
 
-  let ctx = `Você é o Perfumista, consultor especialista em fragrâncias masculinas que faz parte do app Perfumap. `;
+  const categoriaAdj = perfil.categoria==='feminino' ? 'femininas' : perfil.categoria==='compartilhavel' ? 'compartilháveis (unissex)' : 'masculinas';
+  let ctx = `Você é o Perfumista, consultor especialista em fragrâncias ${categoriaAdj} que faz parte do app Perfumap. `;
   ctx += `Você conversa de forma direta, prática e apaixonada por perfumaria. Use emojis com moderação. Responda em português brasileiro.
 
 `;
@@ -2391,7 +2415,7 @@ async function analisarViaChat(){
 // ══════ RESET ══════
 function resetar(){
   budget='';ctxs=[];novasN=0;jaSug=[];famBase={};naoClass=[];classExtras={};analiseId=null;
-  document.querySelectorAll('.obt').forEach(o=>o.classList.remove('sl'));
+  document.querySelectorAll('.obt:not(.cat)').forEach(o=>o.classList.remove('sl'));
   document.querySelectorAll('.ctx').forEach(o=>o.classList.remove('sl'));
   document.getElementById('lc').checked=false;document.getElementById('ban').disabled=true;
   document.getElementById('ban').style.display='';
